@@ -56,21 +56,21 @@ function Personal() {
                 <h1 className="mt-[2px]">Back</h1>
             </div>
             {/* Main form section */}
-            <div className="flex items-center space-x-8 p-8 rounded-md">
+            <div className="flex flex-wrap items-center justify-center  p-10">
                 {/* Avatar Upload Section */}
-                <div className="border w-60 h-60 flex justify-center items-center rounded-md">
+                <div className="border w-64 h-64 flex justify-center items-center rounded-lg bg-white shadow-inner">
                     <Upload
-                        name="file" // Adjust based on your API requirements
+                        name="file"
                         listType="picture-circle"
                         showUploadList={false}
                         action={`https://api.imgbb.com/1/upload?key=sdasdsad`}
                         onChange={handleUploadChange}
                         headers={{
-                            authorization: 'Bearer <token>', // Set token if needed
+                            authorization: 'Bearer <token>',
                         }}
                     >
                         {imageUrl ? (
-                            <img src={imageUrl} alt="avatar" className="w-full h-full object-cover rounded-md" />
+                            <img src={imageUrl} alt="avatar" className="w-full h-full object-cover rounded-lg" />
                         ) : (
                             uploadButton
                         )}
@@ -78,44 +78,47 @@ function Personal() {
                 </div>
 
                 {/* Input Fields Section */}
-                <div className="flex flex-col space-y-4 p-8 w-[500px]">
+                <div className="flex flex-col space-y-6 w-full lg:w-1/2 mt-8 lg:mt-0 lg:ml-10 bg-white p-8 rounded-lg shadow-md">
+                    {/* Name Field */}
                     <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700" htmlFor="name1">
-                            Name
+                        <label className="mb-2 text-sm font-semibold text-gray-600" htmlFor="name1">
+                            Full Name
                         </label>
                         <input
                             type="text"
                             id="name1"
-                            placeholder="Enter your name"
-                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                            placeholder="John Doe"
+                            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </div>
 
+                    {/* Address Field */}
                     <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700" htmlFor="email">
-                            Email
+                        <label className="mb-2 text-sm font-semibold text-gray-600" htmlFor="address">
+                            Address
                         </label>
                         <input
                             type="text"
-                            id="email"
-                            placeholder="Enter your email"
-                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                            id="address"
+                            placeholder="123 Main St, City, State"
+                            className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
 
+                    {/* Phone Number Field */}
                     <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700" htmlFor="phone">
+                        <label className="mb-2 text-sm font-semibold text-gray-600" htmlFor="phone">
                             Phone Number
                         </label>
                         <PhoneInput
-                            country="us" // Default country
+                            country="us"
                             value={phone}
                             onChange={setPhone}
-                            inputClass="!w-full !px-4 !py-2 !border !border-gray-300 !rounded-md !focus:outline-none !focus:border-blue-500"
+                            inputClass="!w-full !px-4 !py-3 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-blue-400"
                             containerClass="!w-full"
                         />
                     </div>
@@ -123,7 +126,7 @@ function Personal() {
                     {/* Submit Button */}
                     <button
                         onClick={handleFormSubmit}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
                     >
                         Submit
                     </button>

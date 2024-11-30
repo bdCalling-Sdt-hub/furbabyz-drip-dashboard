@@ -26,6 +26,12 @@ const sidebarItems: TSidebarItem[] = [
         path: 'space-seeker',
         icon: <LuUser size={24} />,
     },
+    {
+        key: '29',
+        label: 'Products',
+        path: 'products',
+        icon: <LuUser size={24} />,
+    },
 
     {
         key: '3',

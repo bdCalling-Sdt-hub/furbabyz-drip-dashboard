@@ -24,6 +24,8 @@ import Personal from '../pages/PersonalInformation/Personal';
 import ChangeInfo from '../pages/PersonalInformation/ChangeInfo';
 import Return from '../pages/PersonalInformation/Return';
 import TransactionDetails from '../pages/dashboard/TransactionDetails/page';
+import Products from '../pages/Products/page';
+import AddProducts from '../pages/AddProducts/page';
 
 const router = createBrowserRouter([
     {
@@ -36,7 +38,9 @@ const router = createBrowserRouter([
             { path: 'transactions', element: <TransactionDetails /> },
             { path: 'space-seeker', element: <SpaceSeeker /> },
             { path: 'details/:id', element: <Details /> },
-
+            // products
+            { path: 'products', element: <Products /> },
+            { path: 'add-product', element: <AddProducts /> },
             // personal information
             { path: 'personal', element: <Personal /> },
             { path: 'chnage-password', element: <ChangeInfo /> },

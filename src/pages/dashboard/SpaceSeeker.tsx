@@ -276,14 +276,6 @@ const SpaceSeeker = () => {
         navigate(`/details/${record.id}`); // Navigate to the details page with the record's ID
     };
 
-    const handleAction = (record: any) => {
-        console.log(`Action for ${record.name}`);
-    };
-
-    const handleBan = (record: any) => {
-        console.log(`Ban ${record.name}`);
-    };
-
     return (
         <div className="">
             <div className="ml-2  flex justify-between">
