@@ -2,11 +2,13 @@ import { TSidebarItem } from './generateSidebarItems';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { TbLogout } from 'react-icons/tb';
 import { LuUser } from 'react-icons/lu';
-import { MdOutlinePersonalInjury } from 'react-icons/md';
+import { MdOutlinePersonalInjury, MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { GoGear } from 'react-icons/go';
 import { RxDashboard } from 'react-icons/rx';
 import { FaRegMoneyBillAlt } from 'react-icons/fa';
+import { IoIosColorPalette } from 'react-icons/io';
+import { GiResize } from 'react-icons/gi';
 const sidebarItems: TSidebarItem[] = [
     {
         key: '1',
@@ -27,10 +29,22 @@ const sidebarItems: TSidebarItem[] = [
         icon: <LuUser size={24} />,
     },
     {
+        key: '455',
+        label: 'Colors',
+        path: 'colors',
+        icon: <IoIosColorPalette size={24} />,
+    },
+    {
+        key: '45',
+        label: 'Size',
+        path: 'size',
+        icon: <GiResize size={24} />,
+    },
+    {
         key: '29',
         label: 'Products',
         path: 'products',
-        icon: <LuUser size={24} />,
+        icon: <MdOutlineProductionQuantityLimits size={24} />,
     },
 
     {
@@ -57,12 +71,18 @@ const sidebarItems: TSidebarItem[] = [
                 path: 'retrun-policy',
                 icon: <IoDocumentTextOutline size={24} />,
             },
-            {
-                key: '45',
-                label: 'Change Password',
-                path: 'chnage-password',
-                icon: <RiLockPasswordFill size={24} />,
-            },
+            // {
+            //     key: '45',
+            //     label: 'Change Password',
+            //     path: 'chnage-password',
+            //     icon: <RiLockPasswordFill size={24} />,
+            // },
+            // {
+            //     key: '49',
+            //     label: 'Forget Password',
+            //     path: 'forget-password',
+            //     icon: <RiLockPasswordFill size={24} />,
+            // },
         ],
     },
     {

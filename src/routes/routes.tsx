@@ -19,13 +19,16 @@ import SpacePosts from '../pages/dashboard/SpacePosts';
 import SubscribedUsers from '../pages/dashboard/SubscribedUsers';
 import DealingDetails from '../pages/dashboard/DealingDetails';
 import Details from '../pages/Details/Details';
-import Subscriptation from '../pages/Subscriptation/Subscriptation';
 import Personal from '../pages/PersonalInformation/Personal';
 import ChangeInfo from '../pages/PersonalInformation/ChangeInfo';
 import Return from '../pages/PersonalInformation/Return';
 import TransactionDetails from '../pages/dashboard/TransactionDetails/page';
 import Products from '../pages/Products/page';
 import AddProducts from '../pages/AddProducts/page';
+import Colour from '../pages/Color/page';
+import AddColour from '../pages/Color/AddColour';
+import Size from '../pages/Size/page';
+import AddSize from '../pages/Size/AddSize';
 
 const router = createBrowserRouter([
     {
@@ -45,6 +48,11 @@ const router = createBrowserRouter([
             { path: 'personal', element: <Personal /> },
             { path: 'chnage-password', element: <ChangeInfo /> },
             { path: 'retrun-policy', element: <Return /> },
+            { path: 'colors', element: <Colour /> },
+            { path: 'addcolour', element: <AddColour /> },
+            { path: 'size', element: <Size /> },
+            { path: 'AddSize', element: <AddSize /> },
+
             //
             { path: 'space-post', element: <SpacePosts /> },
             { path: 'subscribed-users', element: <SubscribedUsers /> },
@@ -64,7 +72,8 @@ const router = createBrowserRouter([
 
     // ? for authentication sections
     { path: '/login', element: <Login /> },
-    { path: '/forget-password', element: <ForgetPassword /> },
+    { path: 'forget-password', element: <ForgetPassword /> },
+    // { path: '/forget-password', element: <ForgetPassword /> },
     { path: '/verify-otp', element: <VerifyOtp /> },
     { path: '/new-password', element: <NewPassword /> },
 ]);
