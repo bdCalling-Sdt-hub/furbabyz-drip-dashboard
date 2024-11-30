@@ -1,0 +1,5 @@
+.custom-row:hover td {
+    background-color: #31a2ff !important;
+    color: white; /* Optional: change text color for better contrast */
+    transition: background-color 0.3s ease;
+}
