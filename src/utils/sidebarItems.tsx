@@ -6,7 +6,7 @@ import { MdOutlinePersonalInjury, MdOutlineProductionQuantityLimits } from 'reac
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { GoGear } from 'react-icons/go';
 import { RxDashboard } from 'react-icons/rx';
-import { FaRegMoneyBillAlt } from 'react-icons/fa';
+import { FaBloggerB, FaQuestion, FaRegMoneyBillAlt } from 'react-icons/fa';
 import { IoIosColorPalette } from 'react-icons/io';
 import { GiResize } from 'react-icons/gi';
 const sidebarItems: TSidebarItem[] = [
@@ -45,6 +45,18 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Products',
         path: 'products',
         icon: <MdOutlineProductionQuantityLimits size={24} />,
+    },
+    {
+        key: '32',
+        label: 'Blog',
+        path: 'blog',
+        icon: <FaBloggerB size={24} />,
+    },
+    {
+        key: '33',
+        label: 'Faq',
+        path: 'faq',
+        icon: <FaQuestion size={24} />,
     },
 
     {

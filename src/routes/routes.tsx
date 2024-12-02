@@ -4,19 +4,12 @@ import Dashboard from '../pages/dashboard/dashboard/Dashboard';
 import Login from '../pages/authentication/Login';
 import ErrorPage from '../pages/error/ErrorPage';
 import TermsCondition from '../pages/dashboard/settings/TermsCondition';
-
 import Notification from '../pages/dashboard/Notification';
 import ForgetPassword from '../pages/authentication/ForgetPassword';
 import VerifyOtp from '../pages/authentication/VerifyOtp';
 import NewPassword from '../pages/authentication/NewPassword';
 import Profile from '../pages/dashboard/profile/Profile';
-
-import SubscriptionPackages from '../pages/dashboard/settings/SubscriptionPackages';
-import UserAgreement from '../pages/dashboard/settings/UserAgreement';
-
 import SpaceSeeker from '../pages/dashboard/SpaceSeeker';
-import SpacePosts from '../pages/dashboard/SpacePosts';
-import SubscribedUsers from '../pages/dashboard/SubscribedUsers';
 import DealingDetails from '../pages/dashboard/DealingDetails';
 import Details from '../pages/Details/Details';
 import Personal from '../pages/PersonalInformation/Personal';
@@ -29,6 +22,10 @@ import Colour from '../pages/Color/page';
 import AddColour from '../pages/Color/AddColour';
 import Size from '../pages/Size/page';
 import AddSize from '../pages/Size/AddSize';
+import Blog from '../pages/Blog/page';
+import AddBlog from '../pages/Blog/AddBlog';
+import Faq from '../pages/Faq/page';
+import AddFaq from '../pages/Faq/AddFaq';
 
 const router = createBrowserRouter([
     {
@@ -52,17 +49,18 @@ const router = createBrowserRouter([
             { path: 'addcolour', element: <AddColour /> },
             { path: 'size', element: <Size /> },
             { path: 'AddSize', element: <AddSize /> },
+            { path: 'blog', element: <Blog /> },
+            { path: 'add-blog', element: <AddBlog /> },
+            { path: 'faq', element: <Faq /> },
+            { path: 'add-faq', element: <AddFaq /> },
 
             //
-            { path: 'space-post', element: <SpacePosts /> },
-            { path: 'subscribed-users', element: <SubscribedUsers /> },
+
             { path: 'dealing-details', element: <DealingDetails /> },
 
             //    for settings section
-            { path: 'subscriptions', element: <SubscriptionPackages /> },
 
             { path: 'terms', element: <TermsCondition /> },
-            { path: 'agreement', element: <UserAgreement /> },
 
             // others sections
             { path: 'profile', element: <Profile /> },
