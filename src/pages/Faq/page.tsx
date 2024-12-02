@@ -132,9 +132,9 @@ const Faq = () => {
         <div>
             <div className="flex justify-end gap-2">
                 <Link to="/add-faq">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                        <Button className="bg-[#F6FAFF] text-[#023F86]">Add Faq</Button>
-                    </div>
+                    <button className="bg-[#31A2FF] text-white h-8 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
+                        Add Faq
+                    </button>
                 </Link>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                     <Input

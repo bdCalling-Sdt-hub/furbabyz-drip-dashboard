@@ -1,5 +1,5 @@
 // src/pages/dashboard/Details.jsx or Details.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useParams, useNavigate } from 'react-router-dom';

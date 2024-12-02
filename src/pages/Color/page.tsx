@@ -1,5 +1,5 @@
 import { Table, Input, Button } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -102,7 +102,7 @@ const Colour = () => {
     const filteredData = data.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()));
 
     const handleDetails = (record: any) => {
-        navigate(`/details/${record.id}`); // Navigate to the details page with the record's ID
+        navigate(`/details/${record.id}`);
     };
 
     const handleAction = (record: any) => {
@@ -113,9 +113,9 @@ const Colour = () => {
         <div>
             <div className="flex justify-end gap-2">
                 <Link to="/addcolour">
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                        <Button className="bg-[#F6FAFF] text-[#023F86]">Add Colour</Button>
-                    </div>
+                    <button className="bg-[#31A2FF] text-white h-8 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
+                        Add Color
+                    </button>
                 </Link>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                     <Input

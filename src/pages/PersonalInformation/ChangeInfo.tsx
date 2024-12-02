@@ -1,5 +1,4 @@
 import { Button, Form, Input } from 'antd';
-import logo from '../../assets/imageU.png';
 
 function ChangeInfo() {
     const onFinish = (values: any) => {

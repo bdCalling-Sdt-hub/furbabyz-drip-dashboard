@@ -3,7 +3,6 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import { TbLogout } from 'react-icons/tb';
 import { LuUser } from 'react-icons/lu';
 import { MdOutlinePersonalInjury, MdOutlineProductionQuantityLimits } from 'react-icons/md';
-import { RiLockPasswordFill } from 'react-icons/ri';
 import { GoGear } from 'react-icons/go';
 import { RxDashboard } from 'react-icons/rx';
 import { FaBloggerB, FaQuestion, FaRegMoneyBillAlt } from 'react-icons/fa';
@@ -53,7 +52,7 @@ const sidebarItems: TSidebarItem[] = [
         icon: <FaBloggerB size={24} />,
     },
     {
-        key: '33',
+        key: '39',
         label: 'Faq',
         path: 'faq',
         icon: <FaQuestion size={24} />,

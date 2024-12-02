@@ -1,5 +1,5 @@
 import { message, Upload } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import PhoneInput from 'react-phone-input-2';
