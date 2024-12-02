@@ -28,7 +28,7 @@ const Colour = () => {
                     <Button className="bg-[#F6FAFF] text-[#023F86]" onClick={() => handleDetails(record)}>
                         Edit
                     </Button>
-                    <Button className="bg-red-600 text-white text-[#023F86]" onClick={() => handleAction(record)}>
+                    <Button className="bg-red-600 text-white " onClick={() => handleAction(record)}>
                         Delete
                     </Button>
                 </div>

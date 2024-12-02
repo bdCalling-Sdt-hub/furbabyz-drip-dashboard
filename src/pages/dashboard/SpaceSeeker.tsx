@@ -7,6 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 import { IoMdSearch } from 'react-icons/io';
 import { Value } from 'react-calendar/src/shared/types.js';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { useGetUserQuery } from '../../redux/features/auth/userApi';
 
 const SpaceSeeker = () => {
     const [searchText, setSearchText] = useState('');
@@ -14,9 +15,15 @@ const SpaceSeeker = () => {
     const [showPicker, setShowPicker] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+    const { data: UserData, isFetching } = useGetUserQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+    });
+
+    console.log(UserData);
+
     const handleDateChange = (date: Value) => {
         if (date instanceof Date) {
-            setSelectedDate(date); // Only set if it's a valid Date
+            setSelectedDate(date);
         }
         setShowPicker(false); // Close the calendar after selecting a date
     };
