@@ -1,13 +1,35 @@
-import { Button, Checkbox, ConfigProvider, Form, FormProps, Input } from 'antd';
-import { FieldNamesType } from 'antd/es/cascader';
+import { Button, Checkbox, ConfigProvider, Form, Input } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLoginUserMutation } from '../../redux/features/auth/authApi';
+import { useLoginMutation } from '../../redux/features/auth/authApi';
+import { useAppDispatch } from '../../redux/hook';
+import { setUser } from '../../redux/features/auth/authSlice';
+import { verifyToken } from '../../utils/verifyToken';
+
+// Define the type for the form values
+interface LoginFormValues {
+    email: string;
+    password: string;
+    remember: boolean;
+}
 
 const Login = () => {
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/');
+
+    const dispatch = useAppDispatch();
+
+    const [login] = useLoginMutation();
+
+    // Update onFinish with the correct type for the values
+    const onFinish = async (values: LoginFormValues) => {
+        const userInfo = { email: values.email, password: values.password };
+        login(userInfo);
+
+        const res = await login(userInfo).unwrap();
+
+        //verify-token
+        const user = verifyToken(res.data.accessToken);
+
+        dispatch(setUser({ user: user, token: res.data.accessToken }));
     };
 
     return (
@@ -15,7 +37,6 @@ const Login = () => {
             theme={{
                 token: {
                     colorPrimary: '#0A8FDC',
-
                     colorBgContainer: '#F1F4F9',
                 },
                 components: {
@@ -33,7 +54,7 @@ const Login = () => {
             <div className="flex bg-[#1A4F73] items-center justify-center h-screen">
                 <div className="bg-white w-[630px] rounded-lg shadow-lg p-10 ">
                     <div className="text-primaryText space-y-3 text-center">
-                        <h1 className="text-3xl  font-medium text-center mt-2">Login to Account</h1>
+                        <h1 className="text-3xl font-medium text-center mt-2">Login to Account</h1>
                         <p className="text-lg">Please enter your email and password to continue</p>
                     </div>
 
@@ -53,7 +74,7 @@ const Login = () => {
                             name="email"
                             rules={[{ required: true, message: 'Please input your email!' }]}
                         >
-                            <Input placeholder="Enter your email address" type="email" className=" h-12  px-6 " />
+                            <Input placeholder="Enter your email address" type="email" className="h-12 px-6" />
                         </Form.Item>
 
                         <Form.Item
@@ -65,7 +86,7 @@ const Login = () => {
                             name="password"
                             rules={[{ required: true, message: 'Please input your Password!' }]}
                         >
-                            <Input.Password placeholder="Enter your password" className=" h-12  px-6" />
+                            <Input.Password placeholder="Enter your password" className="h-12 px-6" />
                         </Form.Item>
 
                         <div className="flex items-center justify-between mb-4">
@@ -87,7 +108,6 @@ const Login = () => {
                                     width: '100%',
                                     fontWeight: 500,
                                 }}
-                                // onClick={() => navigate('/')}
                             >
                                 Sign In
                             </Button>
