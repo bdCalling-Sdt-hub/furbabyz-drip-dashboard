@@ -4,6 +4,7 @@ import { useLoginMutation } from '../../redux/features/auth/authApi';
 import { useAppDispatch } from '../../redux/hook';
 import { setUser } from '../../redux/features/auth/authSlice';
 import { verifyToken } from '../../utils/verifyToken';
+import Swal from 'sweetalert2';
 
 // Define the type for the form values
 interface LoginFormValues {
@@ -22,14 +23,34 @@ const Login = () => {
     // Update onFinish with the correct type for the values
     const onFinish = async (values: LoginFormValues) => {
         const userInfo = { email: values.email, password: values.password };
-        login(userInfo);
 
-        const res = await login(userInfo).unwrap();
+        try {
+            // Unwrap the response here to catch errors
+            const res = await login(userInfo).unwrap();
 
-        //verify-token
-        const user = verifyToken(res.data.accessToken);
+            // Verify token
+            const user = verifyToken(res.data.accessToken);
 
-        dispatch(setUser({ user: user, token: res.data.accessToken }));
+            dispatch(setUser({ user: user, token: res.data.accessToken }));
+
+            navigate('/');
+
+            if (res.success === true) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${error.data.message}`,
+            });
+        }
     };
 
     return (

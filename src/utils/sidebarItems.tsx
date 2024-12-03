@@ -8,6 +8,9 @@ import { RxDashboard } from 'react-icons/rx';
 import { FaBloggerB, FaQuestion, FaRegMoneyBillAlt } from 'react-icons/fa';
 import { IoIosColorPalette } from 'react-icons/io';
 import { GiResize } from 'react-icons/gi';
+
+import Logout from '../pages/Logout/Logout';
+
 const sidebarItems: TSidebarItem[] = [
     {
         key: '1',
@@ -96,10 +99,16 @@ const sidebarItems: TSidebarItem[] = [
             // },
         ],
     },
+    // {
+    //     key: '6',
+    //     label: 'Log Out',
+    //     path: 'login',
+    //     icon: <TbLogout size={24} />,
+    // },
+
     {
         key: '6',
         label: 'Log Out',
-        path: 'login',
         icon: <TbLogout size={24} />,
     },
 ];

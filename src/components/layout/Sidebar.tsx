@@ -3,9 +3,37 @@ import { sidebarItemsGenerator } from '../../utils/generateSidebarItems';
 import sidebarItems from '../../utils/sidebarItems';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/image.png';
+import { useAppDispatch } from '../../redux/hook';
+import { logout } from '../../redux/features/auth/authSlice';
+import Swal from 'sweetalert2';
 
 const { Sider } = Layout;
 const Sidebar = () => {
+    const dispatch = useAppDispatch();
+
+    const handleLogout = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Dispatch the logout action if confirmed
+                dispatch(logout());
+
+                Swal.fire({
+                    title: 'Logged out!',
+                    text: 'You have been successfully logged out.',
+                    icon: 'success',
+                });
+            }
+        });
+    };
+
     return (
         <ConfigProvider
             theme={{
@@ -47,7 +75,7 @@ const Sidebar = () => {
                     theme="light"
                     mode="inline"
                     defaultSelectedKeys={['dashboard']}
-                    items={sidebarItemsGenerator(sidebarItems)}
+                    items={sidebarItemsGenerator(sidebarItems, handleLogout)}
                     style={{
                         backgroundColor: '#31A2FF', // Menu background color
                         color: '#FFFFFF', // Ensures white text color

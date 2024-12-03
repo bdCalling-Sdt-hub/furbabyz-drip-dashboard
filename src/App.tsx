@@ -1,6 +1,6 @@
-
 import MainLayout from './components/layout/MainLayout';
 import { ConfigProvider } from 'antd';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 function App() {
     return (
@@ -20,7 +20,9 @@ function App() {
                     },
                 }}
             >
-                <MainLayout />
+                <ProtectedRoute>
+                    <MainLayout />
+                </ProtectedRoute>
             </ConfigProvider>
         </>
     );

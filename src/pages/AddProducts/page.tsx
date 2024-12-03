@@ -128,7 +128,7 @@ function AddProducts() {
                                 )}
                             </div>
                         </div>
-                        <div>
+                        <div className="mt-3">
                             <p>video upload</p>
                             <Upload {...props}>
                                 <Button icon={<UploadOutlined />}>Upload</Button> {/* Corrected Button usage */}
