@@ -67,7 +67,14 @@ const faqApi = baseApi.injectEndpoints({
                 method: 'DELETE',
             }),
         }),
+        addFaq: builder.mutation({
+            query: (data) => ({
+                url: '/faq/create-faq',
+                method: 'POST',
+                body: data,
+            }),
+        }),
     }),
 });
 
-export const { useDeleteFaqMutation, useGetAllFaqQuery, useGetSingleFaqQuery } = faqApi;
+export const { useDeleteFaqMutation, useGetAllFaqQuery, useGetSingleFaqQuery, useAddFaqMutation } = faqApi;

@@ -1,24 +1,90 @@
 import { useState } from 'react';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import 'react-phone-input-2/lib/style.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAddFaqMutation } from '../../redux/features/faq/faqApi';
+import Swal from 'sweetalert2';
+import Error from '../../components/shared/ErrorPage';
+import Loading from '../../components/shared/Loading';
 
 function AddFaq() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [answer, setAnswer] = useState('');
+    const [question, setQuestion] = useState('');
+    const [addSize, { isLoading, isError, isSuccess }] = useAddFaqMutation(); // Destructure the hook
 
-    const handleFormSubmit = () => {
-        // Gather all data here
+    const navigate = useNavigate();
+
+    const handleFormSubmit = async () => {
+        if (!answer) {
+            // Optional: Validate the input before submitting
+            alert('Please enter a color name.');
+            return;
+        }
+
         const formData = {
-            name,
-            email,
-            phone,
+            answer: answer,
+            question: question,
         };
-        console.log(formData);
-        // You can now send formData to your backend or use it as needed
+
+        try {
+            // Call the mutation and get the response from the server
+            const response = await addSize(formData).unwrap();
+
+            // Reset input field
+            setAnswer('');
+            setQuestion('');
+
+            navigate('/faq');
+
+            // Check if the response is successful
+            if (response.success) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: response.message || 'Colour Added Successfully', // Use the response message from the server
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                // Optionally handle server-side validation errors or failure
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: response.message || 'Failed to add color',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error: any) {
+            console.log(error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: `${error.data.message}`,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     };
 
+    if (isSuccess) {
+        navigate('/faq');
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <Error />
+            </div>
+        );
+    }
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
     return (
         <div>
             <Link to="/faq">
@@ -43,8 +109,8 @@ function AddFaq() {
                             id="question"
                             placeholder="enter question"
                             className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={question}
+                            onChange={(e) => setQuestion(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col">
@@ -56,8 +122,8 @@ function AddFaq() {
                             id="answer"
                             placeholder="enter answer"
                             className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
                         />
                     </div>
 

@@ -15,8 +15,6 @@ const Faq = () => {
 
     const { data: faqData, isLoading, isError, refetch } = useGetAllFaqQuery([]);
 
-    console.log(faqData);
-
     const [deleteBlog, { isLoading: isDeleting }] = useDeleteFaqMutation();
 
     const handleDetails = (record: any) => {
