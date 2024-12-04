@@ -5,24 +5,48 @@ import 'react-calendar/dist/Calendar.css';
 import { IoMdSearch } from 'react-icons/io';
 
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { useGetAllBlogQuery } from '../../redux/features/blog/blogApi';
+import { render } from 'react-dom';
+import Error from '../../components/shared/ErrorPage';
+import Loading from '../../components/shared/Loading';
 
 const Blog = () => {
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate(); // Initialize useNavigate hook
+    const [currentPage, setCurrentPage] = useState(1); // Track the current page
+    const [pageSize, setPageSize] = useState(10); // Track the page size
+
+    const {
+        data: blog,
+        isLoading,
+        isError,
+    } = useGetAllBlogQuery([
+        { name: 'page', value: currentPage },
+        { name: 'limit', value: 10 },
+    ]);
+
+    console.log(blog, 'blog');
 
     const columns = [
-        {
-            title: 'Products ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
         {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
-            render: (image: string) => (
-                <img src={image} alt="product" style={{ width: 50, height: 50, objectFit: 'cover' }} />
-            ),
+            render: (image: string) => {
+                // Check if the image URL starts with http or https
+                const isExternalImage = image.startsWith('http') || image.startsWith('https');
+
+                return isExternalImage ? (
+                    <img src={image} alt="user" style={{ width: 50, height: 50, objectFit: 'cover' }} />
+                ) : (
+                    // If not an external URL, prepend the base URL from the environment variable
+                    <img
+                        src={`${import.meta.env.VITE_BASE_URL}${image}`}
+                        alt="user"
+                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%' }}
+                    />
+                );
+            },
         },
         {
             title: 'Title',
@@ -31,10 +55,14 @@ const Blog = () => {
         },
         {
             title: 'Description',
-            dataIndex: 'descriptation',
-            key: 'descriptation',
+            dataIndex: 'des',
+            key: 'des',
+            render: (des: string) => {
+                const maxLength = 70; // Maximum number of characters to display
+                // Slice the description and add '...' if it's too long
+                return des?.length > maxLength ? `${des.slice(0, maxLength)}...` : des;
+            },
         },
-
         {
             title: 'Details', // Actions column with buttons
             key: 'actions',
@@ -51,220 +79,31 @@ const Blog = () => {
         },
     ];
     // Sample data
-    const data = [
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'delete',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'active',
-            price: '454',
-            size: 'L',
-            gender: 'male',
-            descriptation: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            color: 'red',
-            title: 'asdsadsadsads',
-        },
-        // additional data...
-    ];
+
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <Error />
+            </div>
+        );
+    }
+
+    const handlePaginationChange = (page: number, limit: number) => {
+        // Update state for current page and page size
+        setCurrentPage(page);
+        setPageSize(limit);
+    };
 
     // Filter data based on search text
-    const filteredData = data.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()));
+    const filteredData = blog?.data?.filter((item: any) => item.title.toLowerCase().includes(searchText.toLowerCase()));
 
     const handleDetails = (record: any) => {
         navigate(`/details/${record.id}`); // Navigate to the details page with the record's ID
@@ -283,6 +122,8 @@ const Blog = () => {
                                 <input
                                     type="text"
                                     placeholder="Search"
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
                                     className="w-full bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
@@ -306,6 +147,14 @@ const Blog = () => {
                     columns={columns}
                     dataSource={filteredData}
                     rowClassName={() => 'custom-row'} // Add a custom class to each row
+                    pagination={{
+                        pageSize: pageSize, // Set page size dynamically
+                        total: blog?.meta?.total,
+                        current: currentPage, // Set current page dynamically
+                        defaultCurrent: 1,
+                        showSizeChanger: false,
+                        onChange: handlePaginationChange, // Call the pagination change handler
+                    }}
                 />
             </div>
         </div>
