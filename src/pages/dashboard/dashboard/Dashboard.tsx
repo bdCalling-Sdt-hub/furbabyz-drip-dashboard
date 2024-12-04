@@ -1,10 +1,6 @@
 import Transaction from '../Transaction/page';
-import BestShorts from './BestShort';
 import DashboardStats from './DashboardStats';
 import EarningChart from './EarningChart';
-import Operation from './Operation';
-import UserChart from './UserChart';
-import UserEngagement from './UserEngagement';
 
 const Dashboard = () => {
     return (

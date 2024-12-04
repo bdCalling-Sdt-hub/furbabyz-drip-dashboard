@@ -1,32 +1,29 @@
 import { Table } from 'antd';
-import { useState } from 'react';
-import { SlCalender } from 'react-icons/sl';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Calendar from 'react-calendar'; // Import the calendar
-import 'react-calendar/dist/Calendar.css';
 import { IoMdSearch } from 'react-icons/io';
-import { Value } from 'react-calendar/src/shared/types.js';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { useGetAllUsersQuery } from '../../redux/features/users/userApi';
+import Loading from '../../components/shared/Loading';
+import Error from '../../components/shared/ErrorPage';
 
 const SpaceSeeker = () => {
     const [searchText, setSearchText] = useState('');
-    const navigate = useNavigate(); // Initialize useNavigate hook
-    const [showPicker, setShowPicker] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1); // Track the current page
+    const [pageSize, setPageSize] = useState(10); // Track the page size
 
-    const handleDateChange = (date: Value) => {
-        if (date instanceof Date) {
-            setSelectedDate(date);
-        }
-        setShowPicker(false); // Close the calendar after selecting a date
-    };
+    // Fetch user data based on current page and page size
+    const {
+        data: usesrData,
+        isError,
+        isLoading,
+    } = useGetAllUsersQuery([
+        { name: 'page', value: currentPage },
+        { name: 'limit', value: 10 },
+    ]);
 
     const columns = [
-        {
-            title: 'Transaction ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -42,14 +39,33 @@ const SpaceSeeker = () => {
             dataIndex: 'phone',
             key: 'phone',
         },
-
         {
-            title: 'Join Date',
-            dataIndex: 'date',
-            key: 'date',
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
+            render: (image: string) => {
+                // Check if the image URL starts with http or https
+                const isExternalImage = image.startsWith('http') || image.startsWith('https');
+
+                return isExternalImage ? (
+                    <img src={image} alt="user" style={{ width: 50, height: 50, objectFit: 'cover' }} />
+                ) : (
+                    // If not an external URL, prepend the base URL from the environment variable
+                    <img
+                        src={`${import.meta.env.VITE_BASE_URL}${image}`}
+                        alt="user"
+                        style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%' }}
+                    />
+                );
+            },
         },
         {
-            title: 'Details', // Actions column with buttons
+            title: 'Join Date',
+            dataIndex: 'updatedAt',
+            key: 'updatedAt',
+        },
+        {
+            title: 'Details',
             key: 'actions',
             render: (_: any, record: any) => (
                 <div>
@@ -63,247 +79,51 @@ const SpaceSeeker = () => {
             ),
         },
     ];
-    // Sample data
-    const data = [
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
-        {
-            key: '2',
-            id: '002',
-            name: 'Jane Smith',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Inactive',
-            email: 'alma.lawson@example.com',
-            phone: '+234 123 456 7890',
-            date: '2023-06-01',
-        },
 
-        // additional data...
-    ];
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <Error />
+            </div>
+        );
+    }
 
     // Filter data based on search text
-    const filteredData = data.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()));
+    const filteredData = usesrData?.data?.filter((item: any) =>
+        item.name.toLowerCase().includes(searchText.toLowerCase()),
+    );
 
     const handleDetails = (record: any) => {
-        navigate(`/details/${record.id}`); // Navigate to the details page with the record's ID
+        navigate(`/userdetails/${record._id}`);
+    };
+
+    // Pagination Change Handler
+    const handlePaginationChange = (page: number, limit: number) => {
+        // Update state for current page and page size
+        setCurrentPage(page);
+        setPageSize(limit);
     };
 
     return (
         <div className="">
-            <div className="ml-2  flex justify-between">
-                <h1 className=" font-semibold text-xl">User List</h1>
-                {/* date */}
+            <div className="ml-2 flex justify-between">
+                <h1 className="font-semibold text-xl">User List</h1>
                 <div className="flex gap-7">
-                    <div className="relative">
-                        <div className="px-4 py-2 flex items-center justify-center gap-10 bg-white border rounded-3xl">
-                            <h1 className="text-lg">Date</h1>
-                            <h1
-                                className="text-xl font-medium cursor-pointer"
-                                onClick={() => setShowPicker(!showPicker)}
-                            >
-                                <SlCalender />
-                            </h1>
-                        </div>
-                        {showPicker && (
-                            <div className="absolute top-12 left-0 z-10 bg-white shadow-lg rounded-lg">
-                                <Calendar onChange={handleDateChange} value={selectedDate} />
-                            </div>
-                        )}
-                    </div>
-                    {/* userName */}
                     <div className="flex items-center gap-2">
                         <div className="flex-1">
                             <input
                                 type="text"
                                 placeholder="Search"
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
                                 className="w-full bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
@@ -317,7 +137,15 @@ const SpaceSeeker = () => {
                 <Table
                     columns={columns}
                     dataSource={filteredData}
-                    rowClassName={() => 'custom-row'} // Add a custom class to each row
+                    rowClassName={() => 'custom-row'}
+                    pagination={{
+                        pageSize: pageSize, // Set page size dynamically
+                        total: usesrData?.meta?.total,
+                        current: currentPage, // Set current page dynamically
+                        defaultCurrent: 1,
+                        showSizeChanger: false,
+                        onChange: handlePaginationChange, // Call the pagination change handler
+                    }}
                 />
             </div>
         </div>

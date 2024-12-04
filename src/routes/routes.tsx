@@ -26,6 +26,8 @@ import Blog from '../pages/Blog/page';
 import AddBlog from '../pages/Blog/AddBlog';
 import Faq from '../pages/Faq/page';
 import AddFaq from '../pages/Faq/AddFaq';
+import UserDetailsPage from '../pages/dashboard/userDetailsPage';
+import EditColor from '../pages/Color/EditColor';
 
 const router = createBrowserRouter([
     {
@@ -38,6 +40,7 @@ const router = createBrowserRouter([
             { path: 'transactions', element: <TransactionDetails /> },
             { path: 'space-seeker', element: <SpaceSeeker /> },
             { path: 'details/:id', element: <Details /> },
+            { path: 'userdetails/:id', element: <UserDetailsPage /> },
             // products
             { path: 'products', element: <Products /> },
             { path: 'add-product', element: <AddProducts /> },
@@ -46,6 +49,7 @@ const router = createBrowserRouter([
             { path: 'chnage-password', element: <ChangeInfo /> },
             { path: 'retrun-policy', element: <Return /> },
             { path: 'colors', element: <Colour /> },
+            { path: 'editcolor/:id', element: <EditColor /> },
             { path: 'addcolour', element: <AddColour /> },
             { path: 'size', element: <Size /> },
             { path: 'AddSize', element: <AddSize /> },
