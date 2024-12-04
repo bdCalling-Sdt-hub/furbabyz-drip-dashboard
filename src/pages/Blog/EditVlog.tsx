@@ -6,7 +6,6 @@ import Error from '../../components/shared/ErrorPage';
 import { useGetGetSingleBlogQuery } from '../../redux/features/blog/blogApi';
 import { useState } from 'react';
 import { CiEdit } from 'react-icons/ci';
-import { FaBackward } from 'react-icons/fa';
 import { IoArrowBack } from 'react-icons/io5';
 
 const BlogDetails = () => {

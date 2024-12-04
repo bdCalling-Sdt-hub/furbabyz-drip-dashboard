@@ -30,6 +30,7 @@ import UserDetailsPage from '../pages/dashboard/userDetailsPage';
 import EditColor from '../pages/Color/EditColor';
 import EditSize from '../pages/Size/EditSize';
 import BlogDetails from '../pages/Blog/EditVlog';
+import EditFaq from '../pages/Faq/EditFaq';
 
 const router = createBrowserRouter([
     {
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
             { path: 'blog/:id', element: <BlogDetails /> },
             { path: 'add-blog', element: <AddBlog /> },
             { path: 'faq', element: <Faq /> },
+            { path: 'faq/:id', element: <EditFaq /> },
             { path: 'add-faq', element: <AddFaq /> },
 
             //
