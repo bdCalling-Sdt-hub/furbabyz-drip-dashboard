@@ -29,6 +29,7 @@ import AddFaq from '../pages/Faq/AddFaq';
 import UserDetailsPage from '../pages/dashboard/userDetailsPage';
 import EditColor from '../pages/Color/EditColor';
 import EditSize from '../pages/Size/EditSize';
+import BlogDetails from '../pages/Blog/EditVlog';
 
 const router = createBrowserRouter([
     {
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
             { path: 'editSize/:id', element: <EditSize /> },
             { path: 'AddSize', element: <AddSize /> },
             { path: 'blog', element: <Blog /> },
+            { path: 'blog/:id', element: <BlogDetails /> },
             { path: 'add-blog', element: <AddBlog /> },
             { path: 'faq', element: <Faq /> },
             { path: 'add-faq', element: <AddFaq /> },

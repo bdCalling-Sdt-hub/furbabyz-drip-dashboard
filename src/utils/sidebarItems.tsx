@@ -9,8 +9,6 @@ import { FaBloggerB, FaQuestion, FaRegMoneyBillAlt } from 'react-icons/fa';
 import { IoIosColorPalette } from 'react-icons/io';
 import { GiResize } from 'react-icons/gi';
 
-import Logout from '../pages/Logout/Logout';
-
 const sidebarItems: TSidebarItem[] = [
     {
         key: '1',
@@ -66,12 +64,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Settings',
         icon: <GoGear size={24} />,
         children: [
-            {
-                key: '33',
-                label: 'Personal Information',
-                path: 'personal',
-                icon: <MdOutlinePersonalInjury size={24} />,
-            },
+            // {
+            //     key: '33',
+            //     label: 'Personal Information',
+            //     path: 'personal',
+            //     icon: <MdOutlinePersonalInjury size={24} />,
+            // },
 
             {
                 key: '42',

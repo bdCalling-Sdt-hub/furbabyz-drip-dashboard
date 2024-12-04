@@ -38,7 +38,7 @@ const UserDetailsPage = () => {
             </div>
         );
     }
-    console.log(data);
+
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
             <Form name="update_profile" layout="vertical" initialValues={{ remember: true }}>
