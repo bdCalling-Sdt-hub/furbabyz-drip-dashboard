@@ -2,33 +2,73 @@ import { Table, Input, Button } from 'antd';
 import { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDeleteSizeMutation, useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
+import Loading from '../../components/shared/Loading';
+import Error from '../../components/shared/ErrorPage';
+import Swal from 'sweetalert2';
 
 const Size = () => {
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate(); // Initialize useNavigate hook
 
+    // Fetch sizes and provide loading and error states
+    const { data, isLoading, isError, error, refetch } = useGetAllSizeQuery(undefined);
+    const [deleteColor] = useDeleteSizeMutation();
+
+    const handleDetails = (record: any) => {
+        navigate(`/editSize/${record._id}`);
+    };
+
+    const handleDelete = (record: any) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await deleteColor(record._id).unwrap(); // Trigger the delete mutation with the color ID
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your color has been deleted.',
+                        icon: 'success',
+                    });
+
+                    // Trigger a refetch to get the updated list of sizes
+                    refetch();
+                } catch (error: any) {
+                    console.error('Error deleting color:', error);
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to Delete Color',
+                        text: error.message || 'Something went wrong!',
+                        showConfirmButton: true,
+                    });
+                }
+            }
+        });
+    };
+
     const columns = [
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-
-        {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'sizeName',
+            key: 'sizeName',
         },
-
         {
-            title: 'Actions', // Actions column with buttons
+            title: 'Actions',
             key: 'actions',
             render: (_: any, record: any) => (
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <Button className="bg-[#F6FAFF] text-[#023F86]" onClick={() => handleDetails(record)}>
                         Edit
                     </Button>
-                    <Button className="bg-red-600 text-white text-[#023F86]" onClick={() => handleAction(record)}>
+                    <Button className="bg-red-600 text-white" onClick={() => handleDelete(record)}>
                         Delete
                     </Button>
                 </div>
@@ -36,78 +76,26 @@ const Size = () => {
         },
     ];
 
-    // Sample data
-    const data = [
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
-        {
-            key: '1',
-            id: '001',
-            name: 'John Doe',
-            image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2080&auto=format&fit=crop',
-            status: 'Active',
-            plan: 'Monthly',
-        },
+    // Ensure the filtering uses the correct field for comparison
+    const filteredData = data?.data?.result?.filter((item: any) =>
+        item.sizeName.toLowerCase().includes(searchText.toLowerCase()),
+    );
 
-        // additional data...
-    ];
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
 
-    // Filter data based on search text
-    const filteredData = data.filter((item) => item.name.toLowerCase().includes(searchText.toLowerCase()));
-
-    const handleDetails = (record: any) => {
-        navigate(`/details/${record.id}`); // Navigate to the details page with the record's ID
-    };
-
-    const handleAction = (record: any) => {
-        console.log(`Action for ${record.name}`);
-    };
+    if (isError) {
+        return (
+            <div>
+                <Error />
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -122,8 +110,8 @@ const Size = () => {
                         placeholder="Search"
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: '300px', display: 'flex', alignItems: 'center' }} // Adjust the width as needed
-                        prefix={<CiSearch />} // Add the search icon here
+                        style={{ width: '300px', display: 'flex', alignItems: 'center' }}
+                        prefix={<CiSearch />}
                     />
                 </div>
             </div>

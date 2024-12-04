@@ -1,23 +1,87 @@
 import { useState } from 'react';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import 'react-phone-input-2/lib/style.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAddSizeMutation } from '../../redux/features/size/sizeApi';
+import Swal from 'sweetalert2';
+import Error from '../../components/shared/ErrorPage';
+import Loading from '../../components/shared/Loading';
 
 function AddSize() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [sizeName, setName] = useState('');
+    const [addSize, { isLoading, isError, isSuccess }] = useAddSizeMutation(); // Destructure the hook
 
-    const handleFormSubmit = () => {
-        // Gather all data here
+    const navigate = useNavigate();
+
+    const handleFormSubmit = async () => {
+        if (!sizeName) {
+            // Optional: Validate the input before submitting
+            alert('Please enter a color name.');
+            return;
+        }
+
         const formData = {
-            name,
-            email,
-            phone,
+            sizeName: sizeName.toUpperCase(), // Data to send to the API
         };
-        console.log(formData);
-        // You can now send formData to your backend or use it as needed
+
+        try {
+            // Call the mutation and get the response from the server
+            const response = await addSize(formData).unwrap();
+
+            // Reset input field
+            setName('');
+
+            navigate('/colors');
+
+            // Check if the response is successful
+            if (response.success) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: response.message || 'Colour Added Successfully', // Use the response message from the server
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                // Optionally handle server-side validation errors or failure
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: response.message || 'Failed to add color',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error: any) {
+            console.log(error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: `${error.data.message}`,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
     };
+
+    if (isSuccess) {
+        navigate('/size');
+    }
+
+    if (isError) {
+        return (
+            <div>
+                <Error />
+            </div>
+        );
+    }
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -43,8 +107,8 @@ function AddSize() {
                             id="name"
                             placeholder="enter Size Name"
                             className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={sizeName}
+                            onChange={(e) => setName(e.target.value.toUpperCase())}
                         />
                     </div>
 

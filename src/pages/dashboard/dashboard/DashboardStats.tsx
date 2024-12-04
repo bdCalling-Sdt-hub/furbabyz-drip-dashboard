@@ -1,3 +1,4 @@
+import Error from '../../../components/shared/ErrorPage';
 import Loading from '../../../components/shared/Loading';
 import { useGetStatisticsQuery } from '../../../redux/features/dashboard/dashboardApi';
 
@@ -17,7 +18,11 @@ const DashboardStats = () => {
     }
 
     if (isError) {
-        return <div>Error loading statistics</div>;
+        return (
+            <div>
+                <Error />
+            </div>
+        );
     }
 
     // Now use the response data dynamically
