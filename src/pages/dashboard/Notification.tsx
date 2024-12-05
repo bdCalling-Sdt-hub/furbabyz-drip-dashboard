@@ -13,8 +13,6 @@ const Notification = () => {
         limit: itemsPerPage,
     });
 
-    console.log(data, 'notification');
-
     if (isLoading) {
         return (
             <div>

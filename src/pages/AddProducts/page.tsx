@@ -6,6 +6,9 @@ import 'react-phone-input-2/lib/style.css';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd'; // Corrected import here
 import { useAddProductMutation } from '../../redux/features/product/productApi';
+import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
+import { useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
+import Loading from '../../components/shared/Loading';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -19,11 +22,18 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 function AddProducts() {
     const [name, setName] = useState('');
-
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('');
+    const [gender, setGender] = useState('');
     const [size, setSize] = useState<string[]>([]);
     const [color, setColor] = useState<string[]>([]);
 
     const [addProduct] = useAddProductMutation();
+
+    //colour
+    const { data: colorData, isLoading: colorLoading } = useGetAllColorQuery(undefined);
+    //size
+    const { data: sizeData, isLoading } = useGetAllSizeQuery(undefined);
 
     const [features, setFeatures] = useState<string[]>([]);
     const [newFeature, setNewFeature] = useState('');
@@ -43,25 +53,6 @@ function AddProducts() {
         if (!size.includes(selectedSize)) {
             setSize((prevSizes) => [...prevSizes, selectedSize]);
         }
-    };
-
-    const handleColorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedColor = e.target.value;
-
-        // Only add the size if it's not already selected
-        if (!color.includes(selectedColor)) {
-            setColor((prevColors) => [...prevColors, selectedColor]);
-        }
-    };
-
-    const handleFormSubmit = () => {
-        const formData = {
-            name,
-            size,
-            color,
-            features, // Include the features array here
-        };
-        console.log(formData);
     };
 
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -100,6 +91,57 @@ function AddProducts() {
                 .then((res) => res.json())
                 .then(({ thumbnail }) => thumbnail);
         },
+    };
+
+    if (colorLoading || isLoading) {
+        return <Loading />;
+    }
+
+    // const handleFormSubmit = () => {
+    //     const formData = {
+    //         name,
+    //         size,
+    //         price,
+    //         color,
+    //         features,
+    //         description,
+    //         gender,
+    //     };
+    //     console.log(formData);
+    // };
+
+    const handleFormSubmit = async () => {
+        const formData = new FormData();
+
+        // Append form fields
+
+        formData.append('data', JSON.stringify(formData));
+
+        formData.append('name', JSON.stringify(name));
+        formData.append('size', JSON.stringify(size)); // You can store sizes as a string or array
+        formData.append('price', JSON.stringify(price));
+        formData.append('color', JSON.stringify(color)); // Same for color
+        formData.append('features', JSON.stringify(features)); // Add features as a JSON string
+        formData.append('description', JSON.stringify(description));
+        formData.append('gender', JSON.stringify(gender));
+
+        // Append image files (use a loop if multiple images)
+        fileList.forEach((file) => {
+            formData.append('images', file.originFileObj as Blob); // 'images' is the key for the file
+        });
+
+        // Append the video file (if there's a video)
+        if (fileList.length > 0) {
+            formData.append('video', fileList[0].originFileObj as Blob); // Assuming video is the first file
+        }
+
+        try {
+            // Trigger the mutation with the formData
+            const response = await addProduct(formData).unwrap();
+            console.log('Product added successfully:', response);
+        } catch (error) {
+            console.error('Error adding product:', error);
+        }
     };
 
     return (
@@ -170,12 +212,12 @@ function AddProducts() {
                                 Price
                             </label>
                             <input
-                                type="text"
+                                type="number"
                                 id="price"
                                 placeholder="Enter the price"
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
                             />
                         </div>
 
@@ -188,22 +230,30 @@ function AddProducts() {
                                 id="gender"
                                 placeholder="Enter your gender"
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={gender}
+                                onChange={(e) => setGender(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
                                 Color
                             </label>
-                            <input
-                                type="text"
+                            <select
                                 id="color"
-                                placeholder="Enter your color"
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
+                                onChange={(e) => setColor([e.target.value])} // Set the selected color
+                                value={color[0] || ''} // Display the selected color, or an empty string if none is selected
+                            >
+                                <option value="">Select Color</option>
+                                {colorData?.data?.map((colorItem: { id: string; colourName: string }) => (
+                                    <option key={colorItem.id} value={colorItem.colourName}>
+                                        {colorItem.colourName}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="mt-2 text-sm text-gray-600">
+                                {color.length > 0 ? `Selected color: ${color[0]}` : 'No color selected'}
+                            </div>
                         </div>
 
                         <div className="flex flex-col">
@@ -214,8 +264,8 @@ function AddProducts() {
                                 type="text"
                                 id="description"
                                 placeholder="Enter description"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
@@ -256,19 +306,18 @@ function AddProducts() {
                                     onChange={handleSizeChange}
                                     value={size}
                                 >
-                                    <option value="">Select Size</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                    <option value="XXL">XXL</option>
+                                    {sizeData?.data?.result?.map((sizeItem: { id: string; sizeName: string }) => (
+                                        <option key={sizeItem.id} value={sizeItem.sizeName}>
+                                            {sizeItem.sizeName}
+                                        </option>
+                                    ))}
                                 </select>
                                 <div className="mt-2 text-sm text-gray-600">
                                     {size.length > 0 ? size.join(', ') : 'None selected'}
                                 </div>
                             </div>
 
-                            <div className="flex flex-col">
+                            {/* <div className="flex flex-col">
                                 <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
                                     Color
                                 </label>
@@ -288,7 +337,7 @@ function AddProducts() {
                                 <div className="mt-2 text-sm text-gray-600">
                                     {color.length > 0 ? color.join(', ') : 'None selected'}
                                 </div>
-                            </div>
+                            </div> */}
                             {/*  */}
                         </div>
                     </div>

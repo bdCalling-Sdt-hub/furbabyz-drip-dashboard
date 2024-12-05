@@ -9,7 +9,7 @@ const HeaderDashboard = () => {
     const { data } = useGetProfileQuery(undefined);
 
     if (!data) return null;
-    console.log(logo);
+
     return (
         <Header
             style={{
