@@ -24,7 +24,7 @@ const EditProfile: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const { data, isLoading } = useGetProfileQuery(undefined);
-    console.log(file);
+
     const [updateProfile] = useUpdateProfileMutation();
 
     useEffect(() => {
@@ -46,7 +46,6 @@ const EditProfile: React.FC = () => {
 
     const onFinish = async (values: any) => {
         setLoading(true);
-        console.log(values, 'values'); // For debugging
 
         try {
             // Create a new FormData instance
@@ -63,8 +62,6 @@ const EditProfile: React.FC = () => {
             // Call the updateBlog mutation and pass the formData
             // const res = await editBlog({ id, formData }).unwrap();
             const res = await updateProfile(formData).unwrap();
-
-            console.log(formData, 'form');
 
             if (res?.success) {
                 // Handle success and return the updated data

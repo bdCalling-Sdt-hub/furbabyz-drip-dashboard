@@ -35,6 +35,7 @@ import AddBlog from '../pages/Blog/AddBlog';
 import Category from '../pages/Category/page';
 import AddCategory from '../pages/Category/AddCategory';
 import EditCategory from '../pages/Category/EditCategory';
+import EditProduct from '../pages/Products/EditProduct';
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
             { path: 'userdetails/:id', element: <UserDetailsPage /> },
             // products
             { path: 'products', element: <Products /> },
+            { path: 'products/:id', element: <EditProduct /> },
             { path: 'add-product', element: <AddProducts /> },
             // personal information
             { path: 'personal', element: <Personal /> },

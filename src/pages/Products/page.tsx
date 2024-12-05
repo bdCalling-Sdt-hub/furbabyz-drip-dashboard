@@ -1,12 +1,12 @@
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'react-calendar/dist/Calendar.css';
 import { IoMdSearch } from 'react-icons/io';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
-import { useGetAllProductQuery } from '../../redux/features/product/productApi';
+import { useDeleteProductMutation, useGetAllProductQuery } from '../../redux/features/product/productApi';
 import Loading from '../../components/shared/Loading';
 import Error from '../../components/shared/ErrorPage';
+import Swal from 'sweetalert2';
 
 const Products = () => {
     const [searchText, setSearchText] = useState('');
@@ -18,11 +18,48 @@ const Products = () => {
         data: productData,
         isLoading,
         isError,
+        refetch,
     } = useGetAllProductQuery([
         { name: 'page', value: currentPage },
         { name: 'limit', value: pageSize },
     ]);
-    console.log(productData);
+
+    const [deleteProduct] = useDeleteProductMutation();
+
+    const handleDelete = (record: any) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await deleteProduct(record._id).unwrap(); // Trigger the delete mutation with the blog ID
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your Product has been deleted.',
+                        icon: 'success',
+                    });
+
+                    // Re-fetch the blog list after deletion to get the latest data
+                    refetch();
+                } catch (error: any) {
+                    console.error('Error deleting blog:', error);
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Failed to Delete Product',
+                        text: error.message || 'Something went wrong!',
+                        showConfirmButton: true,
+                    });
+                }
+            }
+        });
+    };
 
     // Define columns for the Ant Design table
     const columns = [
@@ -98,13 +135,17 @@ const Products = () => {
             title: 'Details',
             key: 'actions',
             render: (_: any, record: any) => (
-                <div>
-                    <div
-                        className="cursor-pointer text-[#31A2FF] hover:text-[#fff]"
-                        onClick={() => handleDetails(record)}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <Button className="bg-[#F6FAFF] text-[#023F86]" onClick={() => handleDetails(record)}>
+                        Edit
+                    </Button>
+                    <Button
+                        className="bg-red-600 text-white"
+                        onClick={() => handleDelete(record)}
+                        // loading={isDeleting} // Show loading state while deleting
                     >
-                        <AiOutlineExclamationCircle size={24} />
-                    </div>
+                        Delete
+                    </Button>
                 </div>
             ),
         },
@@ -117,7 +158,7 @@ const Products = () => {
 
     // Handle row selection
     const handleDetails = (record: any) => {
-        navigate(`/details/${record._id}`); // Navigate to the details page
+        navigate(`/products/${record._id}`); // Navigate to the details page
     };
 
     const handlePaginationChange = (page: number, limit: number) => {
