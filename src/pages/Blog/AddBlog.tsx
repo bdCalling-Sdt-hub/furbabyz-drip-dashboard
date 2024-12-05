@@ -3,30 +3,56 @@ import { Button, Form, Input } from 'antd';
 import { CiEdit } from 'react-icons/ci';
 import 'react-phone-input-2/lib/style.css';
 import { IoArrowBack } from 'react-icons/io5';
+import { useAddBlogMutation } from '../../redux/features/blog/blogApi';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+
+import imagesDog from '../../../public/pro6.png';
 
 interface FormValues {
-    name: string;
-    email: string;
     image: File | null;
-    phone: string;
+    des: string;
+    title: string;
 }
 
-const AddBlog: React.FC = () => {
-    const [imagePreview, setImagePreview] = useState<string>('/user.svg');
+const AddBlog: any = () => {
+    const [imagePreview, setImagePreview] = useState<string>(imagesDog);
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const onFinish = (values: FormValues) => {
-        console.log('Received values of form: ', values);
+    const navigete = useNavigate();
+
+    const [addBlog, { isSuccess }] = useAddBlogMutation();
+
+    const onFinish = async (values: FormValues) => {
         setLoading(true);
 
-        // Simulating an API call
-        setTimeout(() => {
-            values.image = file;
-            console.log('Form Data Submitted:', values);
-            setLoading(false);
-        }, 1500);
+        try {
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(values));
+            formData.append('image', file as Blob);
+
+            const res = await addBlog(formData).unwrap();
+
+            console.log(res);
+
+            if (res.success === true) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
+
+    if (isSuccess) {
+        return navigete('/blog');
+    }
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -102,10 +128,10 @@ const AddBlog: React.FC = () => {
                         {/*  Address */}
                         <Form.Item
                             label="Description"
-                            name="description"
+                            name="des"
                             rules={[{ required: true, message: 'Please enter your description' }]}
                         >
-                            <Input placeholder="enter your description" />
+                            <Input.TextArea rows={8} placeholder="enter your description" />
                         </Form.Item>
 
                         {/* Submit Button */}

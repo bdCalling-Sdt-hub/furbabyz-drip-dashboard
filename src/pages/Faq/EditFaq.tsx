@@ -1,32 +1,50 @@
 import { useState, useEffect } from 'react';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import 'react-phone-input-2/lib/style.css';
-import { Link, useParams } from 'react-router-dom';
-import { useGetSingleFaqQuery } from '../../redux/features/faq/faqApi';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useGetSingleFaqQuery, useUpdateFaqMutation } from '../../redux/features/faq/faqApi';
 import Loading from '../../components/shared/Loading';
 import Error from '../../components/shared/ErrorPage';
+import Swal from 'sweetalert2';
 
 function EditFaq() {
     const { id } = useParams();
-    const [name, setName] = useState('');
+    const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
+    const router = useNavigate();
 
     const { data, isLoading, isError } = useGetSingleFaqQuery(id as string);
+
+    const [updateFaq, { isLoading: isUpdating, isError: isUpdateError }] = useUpdateFaqMutation();
 
     useEffect(() => {
         if (data?.data) {
             // Check if data is available
-            setName(data.data.question); // Set the state with question data
+            setQuestion(data.data.question); // Set the state with question data
             setAnswer(data.data.answer); // Set the state with answer data
         }
     }, [data]); // Re-run whenever data changes
 
-    const handleFormSubmit = () => {
-        const formData = {
-            name,
-            answer,
-        };
-        console.log(formData);
+    const handleFormSubmit = async () => {
+        try {
+            // Call the mutation to update the FAQ
+            const res = await updateFaq({ id, question, answer }).unwrap();
+
+            // Optionally, show a success message or redirect after update
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+            router('/faq');
+        } catch (error) {
+            // Handle any errors (e.g., show an error message)
+            console.error('Failed to update FAQ:', error);
+        }
     };
 
     if (isLoading) {
@@ -36,6 +54,15 @@ function EditFaq() {
     if (isError) {
         return <Error />;
     }
+
+    if (isUpdateError) {
+        return <Error />;
+    }
+
+    if (isUpdating) {
+        return <Loading />;
+    }
+
     return (
         <div>
             <Link to="/faq">
@@ -57,8 +84,8 @@ function EditFaq() {
                             id="question"
                             placeholder="Enter question"
                             className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={question}
+                            onChange={(e) => setQuestion(e.target.value)}
                         />
                     </div>
 

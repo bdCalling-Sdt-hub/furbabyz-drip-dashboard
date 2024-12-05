@@ -1,6 +1,9 @@
 import { useState, useRef } from 'react';
 import JoditEditor from 'jodit-react';
 import { Button } from 'antd';
+import { useAddTermsMutation, useGetAllTermsQuery } from '../../../redux/features/tramandCondition/tramandConditionApi';
+import Loading from '../../../components/shared/Loading';
+import Swal from 'sweetalert2';
 
 const TermsCondition = () => {
     const editor = useRef(null);
@@ -15,6 +18,44 @@ const TermsCondition = () => {
         },
     };
 
+    const { data, isLoading } = useGetAllTermsQuery(undefined);
+
+    const [addTerms, { isLoading: isSaving }] = useAddTermsMutation();
+
+    const handleSave = async () => {
+        try {
+            // Trigger the addTerms mutation with the new content
+            const res = await addTerms({ description: content }).unwrap();
+
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (err) {
+            // Handle error (optional)
+            Swal.fire({
+                position: 'top',
+                icon: 'error',
+                title: `${err}`,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
+
     return (
         <div className="bg-white px-4 py-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between mb-4">
@@ -23,7 +64,7 @@ const TermsCondition = () => {
             <div>
                 <JoditEditor
                     ref={editor}
-                    value={content}
+                    value={data?.data?.description || ''}
                     config={config}
                     onBlur={(newContent) => setContent(newContent)}
                     onChange={() => {}}
@@ -36,6 +77,8 @@ const TermsCondition = () => {
                         width: '150px',
                     }}
                     type="primary"
+                    onClick={handleSave}
+                    loading={isSaving} // Show loading state when saving
                 >
                     Save Changes
                 </Button>

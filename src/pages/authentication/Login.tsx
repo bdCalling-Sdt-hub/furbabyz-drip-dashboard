@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../redux/hook';
 import { setUser } from '../../redux/features/auth/authSlice';
 import { verifyToken } from '../../utils/verifyToken';
 import Swal from 'sweetalert2';
-
+import logo from '../../assets/image.png';
 // Define the type for the form values
 interface LoginFormValues {
     email: string;
@@ -72,8 +72,11 @@ const Login = () => {
                 },
             }}
         >
-            <div className="flex bg-[#1A4F73] items-center justify-center h-screen">
+            <div className="flex bg-[#F7F7F7] items-center justify-center h-screen">
                 <div className="bg-white w-[630px] rounded-lg shadow-lg p-10 ">
+                    <div className="flex justify-center my-8">
+                        <img src={logo} alt="forget-password" />
+                    </div>
                     <div className="text-primaryText space-y-3 text-center">
                         <h1 className="text-3xl font-medium text-center mt-2">Login to Account</h1>
                         <p className="text-lg">Please enter your email and password to continue</p>

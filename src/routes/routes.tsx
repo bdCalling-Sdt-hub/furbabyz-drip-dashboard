@@ -23,7 +23,7 @@ import AddColour from '../pages/Color/AddColour';
 import Size from '../pages/Size/page';
 import AddSize from '../pages/Size/AddSize';
 import Blog from '../pages/Blog/page';
-import AddBlog from '../pages/Blog/AddBlog';
+
 import Faq from '../pages/Faq/page';
 import AddFaq from '../pages/Faq/AddFaq';
 import UserDetailsPage from '../pages/dashboard/userDetailsPage';
@@ -31,6 +31,10 @@ import EditColor from '../pages/Color/EditColor';
 import EditSize from '../pages/Size/EditSize';
 import BlogDetails from '../pages/Blog/EditVlog';
 import EditFaq from '../pages/Faq/EditFaq';
+import AddBlog from '../pages/Blog/AddBlog';
+import Category from '../pages/Category/page';
+import AddCategory from '../pages/Category/AddCategory';
+import EditCategory from '../pages/Category/EditCategory';
 
 const router = createBrowserRouter([
     {
@@ -60,6 +64,11 @@ const router = createBrowserRouter([
             { path: 'blog', element: <Blog /> },
             { path: 'blog/:id', element: <BlogDetails /> },
             { path: 'add-blog', element: <AddBlog /> },
+            // category
+            { path: 'add-category', element: <Category /> },
+            { path: 'category', element: <AddCategory /> },
+            { path: 'category/:id', element: <EditCategory /> },
+
             { path: 'faq', element: <Faq /> },
             { path: 'faq/:id', element: <EditFaq /> },
             { path: 'add-faq', element: <AddFaq /> },

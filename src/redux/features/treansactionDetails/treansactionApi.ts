@@ -20,7 +20,7 @@ type TApiResponseWithPagination<T> = {
 };
 
 // Define the User object (adjust properties based on actual structure)
-export interface IBlog {
+export interface ITransaction {
     id: string;
     title: string;
     des: string;
@@ -30,9 +30,9 @@ export interface IBlog {
     updatedAt: string;
 }
 
-const blogApi = baseApi.injectEndpoints({
+const transactionApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getAllBlog: builder.query({
+        getAllTransaction: builder.query({
             query: (args) => {
                 const params = new URLSearchParams();
 
@@ -46,55 +46,24 @@ const blogApi = baseApi.injectEndpoints({
                 }
 
                 return {
-                    url: '/blog',
+                    url: '/payment',
                     method: 'GET',
                     params,
                 };
             },
-            providesTags: ['Blog'],
-            transformResponse: (response: TApiResponseWithPagination<IBlog>) => {
+            providesTags: ['Transaction'],
+            transformResponse: (response: TApiResponseWithPagination<any>) => {
                 return { data: response.data.result, meta: response.data.meta };
             },
         }),
-        getGetSingleBlog: builder.query<IBlog, string>({
+        getGetSingleTransaction: builder.query<any, string>({
             query: (id) => ({
-                url: `/blog/${id}`,
+                url: `/payment/${id}`,
                 method: 'GET',
             }),
             providesTags: ['Blog'],
         }),
-        deleteBlog: builder.mutation({
-            query: (id) => ({
-                url: `/blog/${id}`,
-                method: 'DELETE',
-            }),
-
-            invalidatesTags: ['Blog'],
-        }),
-        addBlog: builder.mutation({
-            query: (data) => ({
-                url: '/blog/create-blog',
-                method: 'POST',
-                body: data,
-            }),
-
-            invalidatesTags: ['Blog'],
-        }),
-        editBlog: builder.mutation({
-            query: ({ id, formData }) => ({
-                url: `/blog/${id}`,
-                method: 'PATCH',
-                body: formData,
-            }),
-            invalidatesTags: ['Blog'],
-        }),
     }),
 });
 
-export const {
-    useGetAllBlogQuery,
-    useGetGetSingleBlogQuery,
-    useDeleteBlogMutation,
-    useAddBlogMutation,
-    useEditBlogMutation,
-} = blogApi;
+export const { useGetAllTransactionQuery, useGetGetSingleTransactionQuery } = transactionApi;

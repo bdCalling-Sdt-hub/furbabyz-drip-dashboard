@@ -51,6 +51,7 @@ const faqApi = baseApi.injectEndpoints({
                     params,
                 };
             },
+            providesTags: ['Faq'],
             transformResponse: (response: TApiResponseWithPagination<IFaq>) => {
                 return { data: response.data.result, meta: response.data.meta };
             },
@@ -60,12 +61,14 @@ const faqApi = baseApi.injectEndpoints({
                 url: `/faq/${id}`,
                 method: 'GET',
             }),
+            providesTags: ['Faq'],
         }),
         deleteFaq: builder.mutation({
             query: (id) => ({
                 url: `/faq/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Faq'],
         }),
         addFaq: builder.mutation({
             query: (data) => ({
@@ -73,8 +76,23 @@ const faqApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['Faq'],
+        }),
+        updateFaq: builder.mutation({
+            query: (data) => ({
+                url: `/faq/${data.id}`,
+                method: 'PATCH',
+                body: data,
+            }),
+            invalidatesTags: ['Faq'],
         }),
     }),
 });
 
-export const { useDeleteFaqMutation, useGetAllFaqQuery, useGetSingleFaqQuery, useAddFaqMutation } = faqApi;
+export const {
+    useDeleteFaqMutation,
+    useGetAllFaqQuery,
+    useGetSingleFaqQuery,
+    useAddFaqMutation,
+    useUpdateFaqMutation,
+} = faqApi;

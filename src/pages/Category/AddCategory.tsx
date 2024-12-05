@@ -2,43 +2,43 @@ import { useState } from 'react';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import 'react-phone-input-2/lib/style.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddSizeMutation } from '../../redux/features/size/sizeApi';
 import Swal from 'sweetalert2';
 import Error from '../../components/shared/ErrorPage';
 import Loading from '../../components/shared/Loading';
+import { useAddCategoryMutation } from '../../redux/features/category/categoryApi';
 
-function AddSize() {
-    const [sizeName, setName] = useState('');
-    const [addSize, { isLoading, isError, isSuccess }] = useAddSizeMutation(); // Destructure the hook
+function AddCategory() {
+    const [name, setName] = useState('');
+    const [addCategory, { isLoading, isError, isSuccess }] = useAddCategoryMutation(); // Destructure the hook
 
     const navigate = useNavigate();
 
     const handleFormSubmit = async () => {
-        if (!sizeName) {
+        if (!name) {
             // Optional: Validate the input before submitting
-            alert('Please enter a color name.');
+            alert('Please enter a category name.');
             return;
         }
 
         const formData = {
-            sizeName: sizeName.toUpperCase(), // Data to send to the API
+            name: name, // Data to send to the API
         };
 
         try {
             // Call the mutation and get the response from the server
-            const response = await addSize(formData).unwrap();
+            const response = await addCategory(formData).unwrap();
 
             // Reset input field
             setName('');
 
-            navigate('/size');
+            navigate('/add-category');
 
             // Check if the response is successful
             if (response.success) {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
-                    title: response.message || 'Colour Added Successfully', // Use the response message from the server
+                    title: response.message || 'Category Added Successfully', // Use the response message from the server
                     showConfirmButton: false,
                     timer: 1500,
                 });
@@ -100,15 +100,15 @@ function AddSize() {
                     {/* Name Field */}
                     <div className="flex flex-col">
                         <label className="mb-2 text-sm font-semibold text-gray-600" htmlFor="name">
-                            Size Name
+                            Category Name
                         </label>
                         <input
                             type="text"
                             id="name"
-                            placeholder="enter Size Name"
+                            placeholder="enter category Name"
                             className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            value={sizeName}
-                            onChange={(e) => setName(e.target.value.toUpperCase())}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </div>
 
@@ -126,4 +126,4 @@ function AddSize() {
     );
 }
 
-export default AddSize;
+export default AddCategory;

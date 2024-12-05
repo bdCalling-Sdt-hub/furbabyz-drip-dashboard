@@ -1,6 +1,6 @@
 import { TSidebarItem } from './generateSidebarItems';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { TbLogout } from 'react-icons/tb';
+import { TbCategoryPlus, TbLogout } from 'react-icons/tb';
 import { LuUser } from 'react-icons/lu';
 import { MdOutlinePersonalInjury, MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { GoGear } from 'react-icons/go';
@@ -51,6 +51,12 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Blog',
         path: 'blog',
         icon: <FaBloggerB size={24} />,
+    },
+    {
+        key: '102',
+        label: 'Category',
+        path: 'add-category',
+        icon: <TbCategoryPlus size={24} />,
     },
     {
         key: '39',

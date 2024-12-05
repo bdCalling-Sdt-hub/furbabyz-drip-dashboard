@@ -92,8 +92,6 @@ const EarningChart = () => {
             year: item.year, // Amount for that month
         })) || [];
 
-    console.log(chartData, 'sdfsf');
-
     console.log(year);
 
     if (isLoading) {

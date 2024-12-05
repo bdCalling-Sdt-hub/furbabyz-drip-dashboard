@@ -1,10 +1,18 @@
 import { useState, useRef } from 'react';
 import JoditEditor from 'jodit-react';
 import { Button } from 'antd';
+import { useAddPolicyMutation, useGetAllPolicyQuery } from '../../redux/features/ReturnPolicy/ReturnPolicyApi';
+import Swal from 'sweetalert2';
 
 const Return = () => {
     const editor = useRef(null);
     const [content, setContent] = useState('');
+
+    const { data, isLoading } = useGetAllPolicyQuery(undefined);
+
+    const [addPlicy] = useAddPolicyMutation();
+
+    console.log(data, 'data');
 
     const config = {
         readonly: false,
@@ -15,6 +23,32 @@ const Return = () => {
         },
     };
 
+    const handleSave = async () => {
+        try {
+            // Trigger the addTerms mutation with the new content
+            const res = await addPlicy({ description: content }).unwrap();
+
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (err) {
+            // Handle error (optional)
+            Swal.fire({
+                position: 'top',
+                icon: 'error',
+                title: `${err}`,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+    };
+
     return (
         <div className="bg-white px-4 py-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between mb-4">
@@ -23,7 +57,7 @@ const Return = () => {
             <div>
                 <JoditEditor
                     ref={editor}
-                    value={content}
+                    value={data?.data?.description || ''}
                     config={config}
                     onBlur={(newContent) => setContent(newContent)}
                     onChange={() => {}}
@@ -36,6 +70,7 @@ const Return = () => {
                         width: '150px',
                     }}
                     type="primary"
+                    onClick={handleSave}
                 >
                     Save Changes
                 </Button>

@@ -7,6 +7,7 @@ const sizeApi = baseApi.injectEndpoints({
                 url: `/size/get-size`,
                 method: 'GET',
             }),
+            providesTags: ['Size'],
         }),
         addSize: builder.mutation({
             query: (data) => ({
@@ -14,12 +15,14 @@ const sizeApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['Size'],
         }),
         getSingleSize: builder.query({
             query: (id) => ({
                 url: `/size/${id}`,
                 method: 'GET',
             }),
+            providesTags: ['Size'],
         }),
         updateSize: builder.mutation({
             query: ({ id, formData }) => ({
@@ -27,12 +30,14 @@ const sizeApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 body: formData, // Send the body with the form data (without including ID in body)
             }),
+            invalidatesTags: ['Size'],
         }),
         deleteSize: builder.mutation({
             query: (id) => ({
                 url: `/size/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Size'],
         }),
     }),
 });

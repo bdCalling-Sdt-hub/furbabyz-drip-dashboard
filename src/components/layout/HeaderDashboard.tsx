@@ -1,9 +1,15 @@
 import { Layout } from 'antd';
 import { Link } from 'react-router-dom';
+import { useGetProfileQuery } from '../../redux/features/auth/authApi';
+import logo from '../../../public/user1.png';
 
 const { Header } = Layout;
 
 const HeaderDashboard = () => {
+    const { data } = useGetProfileQuery(undefined);
+
+    if (!data) return null;
+    console.log(logo);
     return (
         <Header
             style={{
@@ -15,7 +21,7 @@ const HeaderDashboard = () => {
         >
             <div className="flex justify-between mt-2 w-full ">
                 <div className="flex flex-col gap-2 flex-grow">
-                    <h1 className="text-xl font-semibold mt-5">Hello Tiffany</h1>
+                    <h1 className="text-xl font-semibold mt-5">Welcome {data?.data?.name}</h1>
                 </div>
                 <div className="flex items-center justify-end gap-5 h-full">
                     <div>
@@ -69,7 +75,7 @@ const HeaderDashboard = () => {
                             }}
                         >
                             <img
-                                src={'/user.svg'}
+                                src={data?.data?.image ? `${import.meta.env.VITE_BASE_URL}${data.data.image}` : logo}
                                 style={{
                                     width: '44px',
                                     height: '44px',
@@ -82,8 +88,8 @@ const HeaderDashboard = () => {
                             <div
                                 style={{
                                     display: 'flex',
-                                    flexDirection: 'column', // Use 'row' for horizontal layout
-                                    alignItems: 'flex-start', // Adjust alignment as needed
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
                                 }}
                             >
                                 <h2
@@ -94,7 +100,7 @@ const HeaderDashboard = () => {
                                         marginBottom: '-40px', // Negative margin to reduce spacing
                                     }}
                                 >
-                                    Tiffany
+                                    {data?.data?.name}
                                 </h2>
                                 <h2
                                     style={{
@@ -103,7 +109,7 @@ const HeaderDashboard = () => {
                                         fontWeight: '600',
                                     }}
                                 >
-                                    Admin
+                                    {data?.data?.role}
                                 </h2>
                             </div>
                         </Link>

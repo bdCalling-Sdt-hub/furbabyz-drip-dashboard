@@ -1,31 +1,101 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import { CiEdit } from 'react-icons/ci';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { useGetProfileQuery, useUpdateProfileMutation } from '../../../redux/features/auth/authApi';
+import Loading from '../../../components/shared/Loading';
+import logo from '../../../../public/user1.png';
+import Swal from 'sweetalert2';
 
 interface FormValues {
     name: string;
     email: string;
     image: File | null;
     phone: string;
+    postCode: string;
+    country: string;
 }
 
 const EditProfile: React.FC = () => {
+    const [form] = Form.useForm(); // Bind the form instance
     const [imagePreview, setImagePreview] = useState<string>('/user.svg');
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const onFinish = (values: FormValues) => {
-        console.log('Received values of form: ', values);
-        setLoading(true);
+    const { data, isLoading } = useGetProfileQuery(undefined);
+    console.log(file);
+    const [updateProfile] = useUpdateProfileMutation();
 
-        // Simulating an API call
-        setTimeout(() => {
-            values.image = file;
-            console.log('Form Data Submitted:', values);
+    useEffect(() => {
+        if (data?.data) {
+            form.setFieldsValue({
+                name: data.data.name,
+                address: data.data.address, // Assuming `address` exists in `data`
+                phone: data.data.phone, // Assuming `phone` exists in `data`
+                email: data.data.email, // Assuming `phone` exists in `data`
+                postCode: data.data.postCode, // Assuming `phone` exists in `data`
+                country: data.data.country, // Assuming `phone` exists in `data`
+            });
+
+            // Check if the image exists, and set it in the state
+            const imageUrl = data?.data?.image ? `${import.meta.env.VITE_BASE_URL}${data.data.image}` : logo; // Default to '/user.svg' if image doesn't exist
+            setImagePreview(imageUrl);
+        }
+    }, [data, form]);
+
+    const onFinish = async (values: any) => {
+        setLoading(true);
+        console.log(values, 'values'); // For debugging
+
+        try {
+            // Create a new FormData instance
+            const formData = new FormData();
+
+            // Append the form values (title and description)
+            formData.append('data', JSON.stringify(values));
+
+            // Append the image file if one is selected
+            if (file) {
+                formData.append('image', file);
+            }
+
+            // Call the updateBlog mutation and pass the formData
+            // const res = await editBlog({ id, formData }).unwrap();
+            const res = await updateProfile(formData).unwrap();
+
+            console.log(formData, 'form');
+
+            if (res?.success) {
+                // Handle success and return the updated data
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'error',
+                    title: 'Failed to update blog',
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+            console.log('Error updating blog:', error);
+            Swal.fire({
+                position: 'top',
+                icon: 'error',
+                title: 'An error occurred',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        } finally {
             setLoading(false);
-        }, 1500);
+        }
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,9 +120,13 @@ const EditProfile: React.FC = () => {
         }
     };
 
+    if (isLoading) {
+        return <Loading />;
+    }
+
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
-            <Form name="update_profile" layout="vertical" initialValues={{ remember: true }} onFinish={onFinish}>
+            <Form form={form} name="update_profile" layout="vertical" onFinish={onFinish}>
                 {/* Banner Image */}
                 <div className="flex justify-center mb-6">
                     <div className="w-[150px] h-[150px] relative">
@@ -87,13 +161,13 @@ const EditProfile: React.FC = () => {
                     <Input placeholder="John Doe" />
                 </Form.Item>
 
-                {/*  Address */}
+                {/* Address */}
                 <Form.Item
-                    label=" Address"
+                    label="Address"
                     name="address"
                     rules={[{ required: true, message: 'Please enter your address' }]}
                 >
-                    <Input placeholder="enter your address" />
+                    <Input placeholder="Enter your address" />
                 </Form.Item>
 
                 {/* Phone Number */}
@@ -103,6 +177,22 @@ const EditProfile: React.FC = () => {
                         inputClass="!w-full !px-4 !py-3 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-blue-400"
                         containerClass="!w-full"
                     />
+                </Form.Item>
+
+                <Form.Item
+                    label="Country"
+                    name="country"
+                    rules={[{ required: true, message: 'Please enter your country' }]}
+                >
+                    <Input placeholder="Enter your country" />
+                </Form.Item>
+
+                <Form.Item
+                    label="Post Code"
+                    name="postCode"
+                    rules={[{ required: true, message: 'Please enter your post code' }]}
+                >
+                    <Input placeholder="Enter your post code" />
                 </Form.Item>
 
                 {/* Submit Button */}

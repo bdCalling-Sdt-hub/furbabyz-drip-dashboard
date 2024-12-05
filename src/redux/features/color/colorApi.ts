@@ -7,6 +7,7 @@ const colorApi = baseApi.injectEndpoints({
                 url: `/colour/get-colours`,
                 method: 'GET',
             }),
+            providesTags: ['Color'],
         }),
         addColor: builder.mutation({
             query: (data) => ({
@@ -14,12 +15,14 @@ const colorApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['Color'],
         }),
         getSingleColor: builder.query({
             query: (id) => ({
                 url: `/colour/${id}`,
                 method: 'GET',
             }),
+            providesTags: ['Color'],
         }),
         updateColor: builder.mutation({
             query: ({ id, formData }) => ({
@@ -27,12 +30,14 @@ const colorApi = baseApi.injectEndpoints({
                 method: 'PATCH',
                 body: formData, // Send the body with the form data (without including ID in body)
             }),
+            invalidatesTags: ['Color'],
         }),
         deleteColor: builder.mutation({
             query: (id) => ({
                 url: `/colour/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Color'],
         }),
     }),
 });
