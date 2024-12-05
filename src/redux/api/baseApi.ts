@@ -27,5 +27,6 @@ export const baseApi = createApi({
         'Transaction',
         'TermAndCondition',
         'ReturnPolicy',
+        'Notification',
     ],
 });

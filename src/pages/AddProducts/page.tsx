@@ -5,6 +5,7 @@ import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import 'react-phone-input-2/lib/style.css';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd'; // Corrected import here
+import { useAddProductMutation } from '../../redux/features/product/productApi';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -18,10 +19,21 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 function AddProducts() {
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
 
-    const [size, setSize] = useState<string[]>([]); // State to hold selected sizes
-    const [color, setColor] = useState<string[]>([]); // State to hold selected colors
+    const [size, setSize] = useState<string[]>([]);
+    const [color, setColor] = useState<string[]>([]);
+
+    const [addProduct] = useAddProductMutation();
+
+    const [features, setFeatures] = useState<string[]>([]);
+    const [newFeature, setNewFeature] = useState('');
+
+    const handleAddFeature = () => {
+        if (newFeature && !features.includes(newFeature)) {
+            setFeatures((prevFeatures) => [...prevFeatures, newFeature]);
+            setNewFeature(''); // Clear the input field after adding
+        }
+    };
 
     // Handle size selection
     const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -43,10 +55,11 @@ function AddProducts() {
     };
 
     const handleFormSubmit = () => {
-        // Gather all data here
         const formData = {
             name,
-            email,
+            size,
+            color,
+            features, // Include the features array here
         };
         console.log(formData);
     };
@@ -153,20 +166,6 @@ function AddProducts() {
                         </div>
 
                         <div className="flex flex-col">
-                            <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="email">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder="Enter your email"
-                                className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex flex-col">
                             <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="price">
                                 Price
                             </label>
@@ -193,6 +192,19 @@ function AddProducts() {
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
+                        <div className="flex flex-col">
+                            <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
+                                Color
+                            </label>
+                            <input
+                                type="text"
+                                id="color"
+                                placeholder="Enter your color"
+                                className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
 
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="description">
@@ -207,71 +219,84 @@ function AddProducts() {
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="features">
                                 Features
                             </label>
-                            <input
-                                type="text"
-                                id="features"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Enter features"
-                                className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    id="features"
+                                    value={newFeature}
+                                    onChange={(e) => setNewFeature(e.target.value)}
+                                    placeholder="Enter feature"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <Button onClick={handleAddFeature} type="primary">
+                                    Add Feature
+                                </Button>
+                            </div>
 
-                        <div className="flex flex-col">
-                            <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="size">
-                                Size
-                            </label>
-                            <select
-                                id="size"
-                                className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                onChange={handleSizeChange}
-                                value={size}
-                            >
-                                <option value="">Select Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                                <option value="XXL">XXL</option>
-                            </select>
+                            {/* Displaying Selected Features */}
                             <div className="mt-2 text-sm text-gray-600">
-                                {size.length > 0 ? size.join(', ') : 'None selected'}
+                                {features.length > 0 ? features.join(', ') : 'No features added'}
                             </div>
                         </div>
 
-                        <div className="flex flex-col">
-                            <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
-                                Color
-                            </label>
-                            <select
-                                id="color"
-                                className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                onChange={handleColorChange}
-                                value={color}
-                            >
-                                <option value="">Select Color</option>
-                                <option value="White">White</option>
-                                <option value="Black">Black</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Purple">Purple</option>
-                                <option value="Green">Green</option>
-                            </select>
-                            <div className="mt-2 text-sm text-gray-600">
-                                {color.length > 0 ? color.join(', ') : 'None selected'}
+                        <div className="grid grid-cols-2 gap-4 w-full lg:w-[630px]">
+                            {/* Other Input Fields */}
+
+                            <div className="flex flex-col">
+                                <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="size">
+                                    Size
+                                </label>
+                                <select
+                                    id="size"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onChange={handleSizeChange}
+                                    value={size}
+                                >
+                                    <option value="">Select Size</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                </select>
+                                <div className="mt-2 text-sm text-gray-600">
+                                    {size.length > 0 ? size.join(', ') : 'None selected'}
+                                </div>
                             </div>
+
+                            <div className="flex flex-col">
+                                <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
+                                    Color
+                                </label>
+                                <select
+                                    id="color"
+                                    className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onChange={handleColorChange}
+                                    value={color}
+                                >
+                                    <option value="">Select Color</option>
+                                    <option value="White">White</option>
+                                    <option value="Black">Black</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Purple">Purple</option>
+                                    <option value="Green">Green</option>
+                                </select>
+                                <div className="mt-2 text-sm text-gray-600">
+                                    {color.length > 0 ? color.join(', ') : 'None selected'}
+                                </div>
+                            </div>
+                            {/*  */}
                         </div>
                     </div>
                 </div>
-
                 <div className="flex justify-end">
                     <button
                         onClick={handleFormSubmit}
-                        className="mt-6  w-44 px-6 py-3 bg-blue-600 text-white rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="mt-6  w-72 px-6 py-3 bg-blue-600 text-white rounded-md shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         Submit
                     </button>
