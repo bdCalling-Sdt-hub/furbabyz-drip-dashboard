@@ -4,12 +4,29 @@ import { useNavigate } from 'react-router';
 
 import logo from '../../assets/image.png';
 import { IoArrowBack } from 'react-icons/io5';
+import { useResetEmailMutation } from '../../redux/features/reset/resetApi';
+import Swal from 'sweetalert2';
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
+    const [sendData] = useResetEmailMutation();
+    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values: any) => {
         console.log('Received values of form: ', values);
-        navigate('/verify-otp');
+
+        try {
+            const res: any = sendData(values).unwrap();
+            if (res) {
+                navigate('/verify-otp');
+                navigate(`/verify-otp?email=${values.email}`);
+            }
+            console.log(res);
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: `${error.data.message}`,
+                text: 'Something went wrong!',
+            });
+        }
     };
 
     return (
@@ -80,12 +97,6 @@ const ForgetPassword = () => {
                                     </Button>
                                 </Form.Item>
                             </Form>
-                            <div className="flex justify-center my-3">
-                                <p>
-                                    Didn’t get the Code?{' '}
-                                    <span className="text-primary underline cursor-pointer">Resend code again</span>
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>

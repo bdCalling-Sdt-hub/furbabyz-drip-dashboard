@@ -9,6 +9,8 @@ import { useAddProductMutation } from '../../redux/features/product/productApi';
 import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
 import { useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
 import Loading from '../../components/shared/Loading';
+import { useGetAllCategoryQuery } from '../../redux/features/category/categoryApi';
+import Swal from 'sweetalert2';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -27,6 +29,7 @@ function AddProducts() {
     const [gender, setGender] = useState('');
     const [size, setSize] = useState<string[]>([]);
     const [color, setColor] = useState<string[]>([]);
+    const [category, setCategory] = useState<string[]>([]);
 
     const [addProduct] = useAddProductMutation();
 
@@ -34,6 +37,9 @@ function AddProducts() {
     const { data: colorData, isLoading: colorLoading } = useGetAllColorQuery(undefined);
     //size
     const { data: sizeData, isLoading } = useGetAllSizeQuery(undefined);
+
+    //category
+    const { data: categoryData } = useGetAllCategoryQuery(undefined);
 
     const [features, setFeatures] = useState<string[]>([]);
     const [newFeature, setNewFeature] = useState('');
@@ -97,52 +103,75 @@ function AddProducts() {
         return <Loading />;
     }
 
-    // const handleFormSubmit = () => {
-    //     const formData = {
-    //         name,
-    //         size,
-    //         price,
-    //         color,
-    //         features,
-    //         description,
-    //         gender,
-    //     };
-    //     console.log(formData);
-    // };
+    console.log(fileList, 'fileList');
 
     const handleFormSubmit = async () => {
-        const formData = new FormData();
-
-        // Append form fields
-
-        formData.append('data', JSON.stringify(formData));
-
-        formData.append('name', JSON.stringify(name));
-        formData.append('size', JSON.stringify(size)); // You can store sizes as a string or array
-        formData.append('price', JSON.stringify(price));
-        formData.append('color', JSON.stringify(color)); // Same for color
-        formData.append('features', JSON.stringify(features)); // Add features as a JSON string
-        formData.append('description', JSON.stringify(description));
-        formData.append('gender', JSON.stringify(gender));
-
-        // Append image files (use a loop if multiple images)
-        fileList.forEach((file) => {
-            formData.append('images', file.originFileObj as Blob); // 'images' is the key for the file
-        });
-
-        // Append the video file (if there's a video)
-        if (fileList.length > 0) {
-            formData.append('video', fileList[0].originFileObj as Blob); // Assuming video is the first file
-        }
+        const formData = {
+            name,
+            size,
+            price,
+            color,
+            features,
+            description,
+            gender,
+        };
+        console.log(formData);
 
         try {
-            // Trigger the mutation with the formData
-            const response = await addProduct(formData).unwrap();
-            console.log('Product added successfully:', response);
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(formData));
+            formData.append('image', fileList);
+
+            const res: any = await addProduct(formData).unwrap();
+
+            if (res) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.log(error);
         }
     };
+
+    // const handleFormSubmit = async () => {
+    //     const formData = new FormData();
+    //     // Append form fields
+
+    //     formData.append('data', JSON.stringify(formData));
+
+    //     formData.append('name', JSON.stringify(name));
+    //     formData.append('size', JSON.stringify(size)); // You can store sizes as a string or array
+    //     formData.append('price', JSON.stringify(price));
+    //     formData.append('color', JSON.stringify(color)); // Same for color
+    //     formData.append('features', JSON.stringify(features)); // Add features as a JSON string
+    //     formData.append('description', JSON.stringify(description));
+    //     formData.append('gender', JSON.stringify(gender));
+
+    //     // Append image files (use a loop if multiple images)
+    //     fileList.forEach((file) => {
+    //         formData.append('images', file.originFileObj as Blob); // 'images' is the key for the file
+    //     });
+
+    //     // Append the video file (if there's a video)
+    //     if (fileList.length > 0) {
+    //         formData.append('video', fileList[0].originFileObj as Blob); // Assuming video is the first file
+    //     }
+
+    //     try {
+    //         // Trigger the mutation with the formData
+    //         const response = await addProduct(formData).unwrap();
+    //         console.log('Product added successfully:', response);
+    //     } catch (error) {
+    //         console.error('Error adding product:', error);
+    //     }
+    // };
+
+    console.log(categoryData);
 
     return (
         <div className="bg-gray-50 min-h-screen p-8">
@@ -162,6 +191,7 @@ function AddProducts() {
                         <div>
                             <div className="flex gap-2">
                                 <Upload
+                                    multiple
                                     action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                                     listType="picture-card"
                                     fileList={fileList}
@@ -242,9 +272,8 @@ function AddProducts() {
                                 id="color"
                                 className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 onChange={(e) => setColor([e.target.value])} // Set the selected color
-                                value={color[0] || ''} // Display the selected color, or an empty string if none is selected
                             >
-                                <option value="">Select Color</option>
+                                <option selected>Choose a color</option>
                                 {colorData?.data?.map((colorItem: { id: string; colourName: string }) => (
                                     <option key={colorItem.id} value={colorItem.colourName}>
                                         {colorItem.colourName}
@@ -317,27 +346,27 @@ function AddProducts() {
                                 </div>
                             </div>
 
-                            {/* <div className="flex flex-col">
+                            <div className="flex flex-col">
                                 <label className="mb-2 text-sm font-medium text-gray-700" htmlFor="color">
-                                    Color
+                                    Category
                                 </label>
                                 <select
                                     id="color"
                                     className="px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    onChange={handleColorChange}
-                                    value={color}
+                                    onChange={(e) => setCategory([e.target.value])} // Set the selected color
+                                    value={category[0] || ''} // Display the selected color, or an empty string if none is selected
                                 >
-                                    <option value="">Select Color</option>
-                                    <option value="White">White</option>
-                                    <option value="Black">Black</option>
-                                    <option value="Blue">Blue</option>
-                                    <option value="Purple">Purple</option>
-                                    <option value="Green">Green</option>
+                                    <option value="">Select Category</option>
+                                    {categoryData?.data?.map((colorItem: { id: string; name: string }) => (
+                                        <option key={colorItem.id} value={colorItem.name}>
+                                            {colorItem.name}
+                                        </option>
+                                    ))}
                                 </select>
                                 <div className="mt-2 text-sm text-gray-600">
-                                    {color.length > 0 ? color.join(', ') : 'None selected'}
+                                    {category.length > 0 ? `Selected color: ${category[0]}` : 'No category selected'}
                                 </div>
-                            </div> */}
+                            </div>
                             {/*  */}
                         </div>
                     </div>

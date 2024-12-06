@@ -1,17 +1,37 @@
 import { Button } from 'antd';
 import { useState } from 'react';
-import { useGetAllNotificationQuery } from '../../redux/features/notification/notificationApi';
+import {
+    useDeleteAllNotificationsMutation,
+    useGetAllNotificationQuery,
+} from '../../redux/features/notification/notificationApi';
 import Loading from '../../components/shared/Loading';
+import { da } from 'date-fns/locale';
 
 const Notification = () => {
     const [page, setPage] = useState(1); // Current page state
     const itemsPerPage = 10; // Number of items per page
 
-    // Pass page and itemsPerPage as arguments to the query hook
+    // Always call hooks at the top level
     const { data, isLoading } = useGetAllNotificationQuery({
         page,
         limit: itemsPerPage,
     });
+
+    const [deleteNotification, { isLoading: isDeleting }] = useDeleteAllNotificationsMutation();
+
+    const handleDeleteAllNotifications = async () => {
+        try {
+            await deleteNotification({}).unwrap();
+            // Optionally, trigger UI updates or show a success message
+        } catch (error) {
+            console.error('Error deleting notifications:', error);
+            // Handle failure (e.g., show an error message)
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage); // Update the page number
+    };
 
     if (isLoading) {
         return (
@@ -21,17 +41,17 @@ const Notification = () => {
         );
     }
 
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage); // Update the page number
-    };
-
     return (
         <div className="mt-5">
             <div className="bg-white p-5 rounded-xl shadow-lg">
                 <div className="flex items-center justify-between my-4">
                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
-                    <Button className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg">
-                        <span>Read all</span>
+                    <Button
+                        onClick={handleDeleteAllNotifications}
+                        className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg"
+                        loading={isDeleting} // Shows loading spinner when deleting
+                    >
+                        <span>Delete all</span>
                     </Button>
                 </div>
                 <div>

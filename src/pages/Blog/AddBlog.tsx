@@ -34,8 +34,6 @@ const AddBlog: any = () => {
 
             const res = await addBlog(formData).unwrap();
 
-            console.log(res);
-
             if (res.success === true) {
                 Swal.fire({
                     position: 'top',

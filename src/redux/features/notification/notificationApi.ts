@@ -58,7 +58,29 @@ const notificationApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Notification'],
         }),
+        getNotification: builder.query({
+            query: () => {
+                return {
+                    url: '/notification/admin',
+                    method: 'GET',
+                };
+            },
+            providesTags: ['Notification'],
+        }),
+
+        deleteAllNotifications: builder.mutation({
+            query: () => ({
+                url: '/notification/delete-all',
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Notification'],
+        }),
     }),
 });
 
-export const { useGetAllNotificationQuery, useSeeNofiticationMutation } = notificationApi;
+export const {
+    useGetAllNotificationQuery,
+    useSeeNofiticationMutation,
+    useGetNotificationQuery,
+    useDeleteAllNotificationsMutation,
+} = notificationApi;

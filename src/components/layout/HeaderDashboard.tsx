@@ -3,12 +3,27 @@ import { Link } from 'react-router-dom';
 import { useGetProfileQuery } from '../../redux/features/auth/authApi';
 import logo from '../../../public/user1.png';
 
+import Loading from '../shared/Loading';
+import { useGetNotificationQuery } from '../../redux/features/notification/notificationApi';
+
 const { Header } = Layout;
 
 const HeaderDashboard = () => {
-    const { data } = useGetProfileQuery(undefined);
+    const { data, isLoading } = useGetProfileQuery(undefined);
+
+    const { data: notification } = useGetNotificationQuery(undefined);
 
     if (!data) return null;
+
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        );
+    }
+
+    const notificationCount = notification?.data?.meta?.total || 0;
 
     return (
         <Header
@@ -32,7 +47,7 @@ const HeaderDashboard = () => {
                                 <button className="py-4 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out">
                                     <span className="absolute inset-0 -top-4  -mr-6">
                                         <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-primary text-white">
-                                            6
+                                            {notificationCount}
                                         </div>
                                     </span>
                                     <svg

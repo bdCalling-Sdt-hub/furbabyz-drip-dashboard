@@ -1,12 +1,30 @@
 import { Button, ConfigProvider, Form, FormProps, Input } from 'antd';
 import { FieldNamesType } from 'antd/es/cascader';
 import { useNavigate } from 'react-router';
+import { useResetPasswordMutation } from '../../redux/features/reset/resetApi';
+import Swal from 'sweetalert2';
 
 const NewPassword = () => {
     const navigate = useNavigate();
+
+    const [NewPassword] = useResetPasswordMutation();
+
     const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/');
+        // navigate('/');
+
+        try {
+            const res: any = NewPassword(values).unwrap();
+
+            if (res) {
+                navigate('/');
+            }
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: `${error.data.message}`,
+                text: 'Something went wrong!',
+            });
+        }
     };
 
     return (
@@ -29,7 +47,7 @@ const NewPassword = () => {
                 },
             }}
         >
-            <div className="flex bg-[#1A4F73] items-center justify-center h-screen">
+            <div className="flex bg-[#f3f3f3] items-center justify-center h-screen">
                 <div className="bg-white w-[630px] rounded-lg shadow-lg p-10 ">
                     <div className="text-primaryText max-w-md mx-auto space-y-3 text-center">
                         <h1 className="text-3xl  font-medium text-center mt-2">Set a new password</h1>
@@ -49,7 +67,7 @@ const NewPassword = () => {
                                     New Password
                                 </label>
                             }
-                            name="new_password"
+                            name="newPassword"
                             rules={[{ required: true, message: 'Please input new password!' }]}
                         >
                             <Input.Password placeholder="KK!@#$15856" className=" h-12 px-6" />
@@ -60,7 +78,7 @@ const NewPassword = () => {
                                     Confirm Password
                                 </label>
                             }
-                            name="confirm_password"
+                            name="confirmPassword"
                             rules={[{ required: true, message: 'Please input confirm password!' }]}
                         >
                             <Input.Password placeholder="KK!@#$15856" className="h-12 px-6" />

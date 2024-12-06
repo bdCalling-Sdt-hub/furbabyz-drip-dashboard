@@ -3,12 +3,38 @@ import { FieldNamesType } from 'antd/es/cascader';
 import { IoArrowBack } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/image.png';
+import { useVerifyOtpMutation } from '../../redux/features/reset/resetApi';
+import Swal from 'sweetalert2';
+import { useState } from 'react';
+import OTPInput from 'react-otp-input';
 
 const VerifyOtp = () => {
     const navigate = useNavigate();
-    const onFinish: FormProps<FieldNamesType>['onFinish'] = (values) => {
-        console.log('Received values of form: ', values);
-        navigate('/new-password');
+    const [otp, setOtp] = useState<any>('');
+    const [verifyOtp] = useVerifyOtpMutation();
+    const email = new URLSearchParams(location.search).get('email');
+
+    const onFinish: FormProps<FieldNamesType>['onFinish'] = async () => {
+        const otpData = {
+            email,
+            oneTimeCode: parseInt(otp),
+        };
+
+        try {
+            // const res: any = verifyOtp({ ...values, email }).unwrap();
+            const response = await verifyOtp(otpData).unwrap();
+
+            if (response) {
+                localStorage.setItem('Authorization', response.data);
+                navigate(`/new-password?email=${email}`);
+            }
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: `${error.data.message}`,
+                text: 'Something went wrong!',
+            });
+        }
     };
 
     return (
@@ -51,20 +77,25 @@ const VerifyOtp = () => {
                                 initialValues={{ remember: true }}
                                 onFinish={onFinish}
                             >
-                                <Form.Item
-                                    className="flex items-center justify-center mx-auto"
-                                    name="otp"
-                                    rules={[{ required: true, message: 'Please input otp code here!' }]}
-                                >
-                                    <Input.OTP
-                                        style={{
-                                            width: 500,
-                                            height: 45, // Add height here
+                                <div className="flex items-center justify-center mb-6">
+                                    <OTPInput
+                                        value={otp}
+                                        onChange={setOtp}
+                                        numInputs={6}
+                                        inputStyle={{
+                                            height: 50,
+                                            width: 50,
+                                            borderRadius: '8px',
+                                            margin: '16px',
+                                            fontSize: '20px',
+                                            border: '1px solid #007BA5',
+                                            color: '#2B2A2A',
+                                            outline: 'none',
+                                            marginBottom: 10,
                                         }}
-                                        variant="filled"
-                                        length={5}
+                                        renderInput={(props) => <input {...props} />}
                                     />
-                                </Form.Item>
+                                </div>
 
                                 <Form.Item>
                                     <Button
