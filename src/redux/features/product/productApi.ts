@@ -61,8 +61,9 @@ const productApi = baseApi.injectEndpoints({
             transformResponse: (response: TApiResponseWithPagination<IProduct>) => {
                 return { data: response.data.result, meta: response.data.meta };
             },
+            providesTags: ['Product'],
         }),
-        getGetSingleProduct: builder.query<IProduct, string>({
+        getGetSingleProduct: builder.query({
             query: (id) => ({
                 url: `/product/${id}`,
                 method: 'GET',
@@ -73,6 +74,14 @@ const productApi = baseApi.injectEndpoints({
             query: (id) => ({
                 url: `/product/${id}`,
                 method: 'DELETE',
+            }),
+            invalidatesTags: ['Product'],
+        }),
+        updateProduct: builder.mutation({
+            query: (arg) => ({
+                url: `/product/${arg.id}`,
+                method: 'PATCH',
+                body: arg.data,
             }),
             invalidatesTags: ['Product'],
         }),
@@ -87,5 +96,10 @@ const productApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetAllProductQuery, useGetGetSingleProductQuery, useDeleteProductMutation, useAddProductMutation } =
-    productApi;
+export const {
+    useGetAllProductQuery,
+    useGetGetSingleProductQuery,
+    useDeleteProductMutation,
+    useAddProductMutation,
+    useUpdateProductMutation,
+} = productApi;
