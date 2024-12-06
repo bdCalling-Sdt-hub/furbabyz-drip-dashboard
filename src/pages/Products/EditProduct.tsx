@@ -100,7 +100,7 @@ const EditProduct = () => {
 
     const handleRemove = (file: any) => {
         if (file.url) {
-            const removedUrl = file.url.replace(`${import.meta.env.VITE_BASE_URL}/`, ''); // Extract relative path
+            const removedUrl = file.url.replace(`${import.meta.env.VITE_BASE_URL}`, '');
             setRemovedImages((prev) => [...prev, removedUrl]);
         }
         return true; // Allow removal in the UI
