@@ -76,7 +76,7 @@ const productApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Product'],
         }),
-        addProduct: builder.mutation<IProduct, FormData>({
+        addProduct: builder.mutation({
             query: (data) => ({
                 url: `/product/create-product`,
                 method: 'POST',
