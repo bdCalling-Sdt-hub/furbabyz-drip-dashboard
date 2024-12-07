@@ -7,7 +7,7 @@ import { useAddBlogMutation } from '../../redux/features/blog/blogApi';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
-import imagesDog from '../../../public/pro6.png';
+import imagesDog from '../../../public/add.png';
 
 interface FormValues {
     image: File | null;

@@ -227,7 +227,7 @@
 import React, { useState } from 'react';
 import { Button, ConfigProvider, Table } from 'antd';
 import { useGetAllTransactionQuery } from '../../../redux/features/treansactionDetails/treansactionApi';
-import { IoMdSearch } from 'react-icons/io';
+
 import Loading from '../../../components/shared/Loading';
 import Error from '../../../components/shared/ErrorPage';
 
@@ -358,11 +358,8 @@ const TrDetails: React.FC = () => {
                                     placeholder="Search"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    className="w-full bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full bg-white text-gray-800 rounded-2xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
-                            </div>
-                            <div className="bg-[#31A2FF] text-white h-8 w-8 flex items-center justify-center rounded-full shadow-md cursor-pointer">
-                                <IoMdSearch size={20} />
                             </div>
                         </div>
                     </div>
@@ -386,7 +383,7 @@ const TrDetails: React.FC = () => {
                     rowClassName={() => 'custom-row'}
                     pagination={{
                         pageSize: pageSize, // Set page size dynamically
-                        total: response?.data?.length,
+                        total: response?.meta?.total,
                         current: currentPage, // Set current page dynamically
                         defaultCurrent: 1,
                         showSizeChanger: false,

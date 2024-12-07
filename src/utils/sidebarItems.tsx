@@ -41,6 +41,12 @@ const sidebarItems: TSidebarItem[] = [
         icon: <GiResize size={24} />,
     },
     {
+        key: '102',
+        label: 'Category',
+        path: 'add-category',
+        icon: <TbCategoryPlus size={24} />,
+    },
+    {
         key: '29',
         label: 'Products',
         path: 'products',
@@ -52,12 +58,7 @@ const sidebarItems: TSidebarItem[] = [
         path: 'blog',
         icon: <FaBloggerB size={24} />,
     },
-    {
-        key: '102',
-        label: 'Category',
-        path: 'add-category',
-        icon: <TbCategoryPlus size={24} />,
-    },
+
     {
         key: '39',
         label: 'Faq',
@@ -70,13 +71,6 @@ const sidebarItems: TSidebarItem[] = [
         label: 'Settings',
         icon: <GoGear size={24} />,
         children: [
-            // {
-            //     key: '33',
-            //     label: 'Personal Information',
-            //     path: 'personal',
-            //     icon: <MdOutlinePersonalInjury size={24} />,
-            // },
-
             {
                 key: '42',
                 label: 'Terms & Conditions',
@@ -89,18 +83,6 @@ const sidebarItems: TSidebarItem[] = [
                 path: 'retrun-policy',
                 icon: <IoDocumentTextOutline size={24} />,
             },
-            // {
-            //     key: '45',
-            //     label: 'Change Password',
-            //     path: 'chnage-password',
-            //     icon: <RiLockPasswordFill size={24} />,
-            // },
-            // {
-            //     key: '49',
-            //     label: 'Forget Password',
-            //     path: 'forget-password',
-            //     icon: <RiLockPasswordFill size={24} />,
-            // },
         ],
     },
     // {

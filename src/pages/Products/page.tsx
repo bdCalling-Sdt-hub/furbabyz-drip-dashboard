@@ -202,9 +202,6 @@ const Products = () => {
                                     className="w-full bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
-                            <div className="bg-[#31A2FF] text-white h-8 w-8 flex items-center justify-center rounded-full shadow-md cursor-pointer">
-                                <IoMdSearch size={20} />
-                            </div>
                         </div>
                     </div>
                     <div className="flex gap-7">

@@ -75,6 +75,21 @@ const notificationApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Notification'],
         }),
+        readNotification: builder.mutation({
+            query: () => ({
+                url: `/notification/admin`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['Notification'],
+        }),
+
+        getANotification: builder.query({
+            query: () => ({
+                url: `/notification/admin`,
+                method: 'GET',
+            }),
+            providesTags: ['Notification'],
+        }),
     }),
 });
 
@@ -83,4 +98,6 @@ export const {
     useSeeNofiticationMutation,
     useGetNotificationQuery,
     useDeleteAllNotificationsMutation,
+    useReadNotificationMutation,
+    useGetANotificationQuery,
 } = notificationApi;

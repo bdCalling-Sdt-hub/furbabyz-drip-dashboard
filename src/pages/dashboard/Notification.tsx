@@ -1,37 +1,138 @@
+// import { Button } from 'antd';
+// import { useState } from 'react';
+// import { useGetAllNotificationQuery } from '../../redux/features/notification/notificationApi';
+// import Loading from '../../components/shared/Loading';
+
+// const Notification = () => {
+//     const [page, setPage] = useState(1); // Current page state
+//     const itemsPerPage = 10; // Number of items per page
+
+//     // Always call hooks at the top level
+//     const { data, isLoading } = useGetAllNotificationQuery({
+//         page,
+//         limit: itemsPerPage,
+//     });
+
+//     const handlePageChange = (newPage: number) => {
+//         setPage(newPage); // Update the page number
+//     };
+
+//     if (isLoading) {
+//         return (
+//             <div>
+//                 <Loading />
+//             </div>
+//         );
+//     }
+
+//     return (
+//         <div className="mt-5">
+//             <div className="bg-white p-5 rounded-xl shadow-lg">
+//                 <div className="flex items-center justify-between my-4">
+//                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
+//                     <Button className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg">
+//                         <span>Read All</span>
+//                     </Button>
+//                 </div>
+//                 <div>
+//                     {data?.data?.map((item: any, index: number) => {
+//                         return (
+//                             <div key={index} className="w-full mx-auto p-4 my-4 min-h-20 bg-white shadow-md rounded-md">
+//                                 <div className="text-sm">
+//                                     <div className="flex items-center gap-5">
+//                                         <p className="font-semibold text-[#555555]">{item?.text}</p>
+//                                         <div className="flex justify-between items-center gap-5 text-[#A7A7A7]">
+//                                             <span className="text-xs">{item?.createdAt.slice(0, 10)}</span>
+//                                             <span className="text-xs">{item?.createdAt.slice(11, 16)}</span>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         );
+//                     })}
+//                 </div>
+
+//                 {/* Pagination Controls */}
+//                 <div className="flex justify-center mt-4">
+//                     <Button className="mr-2" onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+//                         Previous
+//                     </Button>
+//                     <span className="text-sm text-gray-500">{`Page ${page}`}</span>
+//                     <Button className="ml-2" onClick={() => handlePageChange(page + 1)} disabled={data?.meta?.nextPage}>
+//                         Next
+//                     </Button>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Notification;
+
 import { Button } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-    useDeleteAllNotificationsMutation,
     useGetAllNotificationQuery,
+    useGetANotificationQuery,
+    useReadNotificationMutation,
 } from '../../redux/features/notification/notificationApi';
 import Loading from '../../components/shared/Loading';
-import { da } from 'date-fns/locale';
+import io from 'socket.io-client';
+import Swal from 'sweetalert2';
+import moment from 'moment';
+import { formatDistanceToNow } from 'date-fns';
 
 const Notification = () => {
     const [page, setPage] = useState(1); // Current page state
+    const [notifications, setNotifications] = useState<any[]>([]); // To store notifications
     const itemsPerPage = 10; // Number of items per page
 
-    // Always call hooks at the top level
-    const { data, isLoading } = useGetAllNotificationQuery({
+    const { data, isLoading, refetch } = useGetAllNotificationQuery({
         page,
         limit: itemsPerPage,
     });
+    const { refetch: refetchNotification } = useGetANotificationQuery(undefined);
 
-    const [deleteNotification, { isLoading: isDeleting }] = useDeleteAllNotificationsMutation();
-
-    const handleDeleteAllNotifications = async () => {
-        try {
-            await deleteNotification({}).unwrap();
-            // Optionally, trigger UI updates or show a success message
-        } catch (error) {
-            console.error('Error deleting notifications:', error);
-            // Handle failure (e.g., show an error message)
-        }
-    };
+    const [read, { isLoading: isReadLoading }] = useReadNotificationMutation();
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage); // Update the page number
     };
+
+    // Setup the socket connection and listen for real-time updates
+    useEffect(() => {
+        const socket = io('http://192.168.10.18:5050'); // Connect to your socket server
+
+        socket.on('get-notification::ADMIN', (newNotification) => {
+            setNotifications((prevNotifications) => {
+                refetchNotification();
+
+                const exists = prevNotifications.some((notification) => notification._id === newNotification._id);
+
+                if (!exists) {
+                    return [newNotification, ...prevNotifications]; // Add the new notification
+                }
+                return prevNotifications; // Return the previous state if no new data
+            });
+        });
+
+        // Cleanup the socket connection on component unmount
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
+    // When data is fetched, set it in the notifications state
+    useEffect(() => {
+        if (data?.data) {
+            setNotifications(data.data); // Replace notifications with current page data
+        }
+    }, [data]);
+
+    // Trigger refetch on component mount or page change
+    useEffect(() => {
+        refetch();
+    }, [refetch, page]);
 
     if (isLoading) {
         return (
@@ -41,35 +142,58 @@ const Notification = () => {
         );
     }
 
+    const handleReadNotification = async () => {
+        try {
+            const res = await read('/admin').unwrap();
+
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+
+            refetch();
+        } catch (error) {
+            console.error('Error reading notification:', error);
+        }
+    };
+
     return (
         <div className="mt-5">
             <div className="bg-white p-5 rounded-xl shadow-lg">
                 <div className="flex items-center justify-between my-4">
                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
                     <Button
-                        onClick={handleDeleteAllNotifications}
+                        loading={isReadLoading}
+                        onClick={handleReadNotification}
                         className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg"
-                        loading={isDeleting} // Shows loading spinner when deleting
                     >
-                        <span>Delete all</span>
+                        <span>Read All</span>
                     </Button>
                 </div>
                 <div>
-                    {data?.data?.map((item: any, index: number) => {
-                        return (
-                            <div key={index} className="w-full mx-auto p-4 my-4 min-h-20 bg-white shadow-md rounded-md">
-                                <div className="text-sm">
-                                    <div className="flex items-center gap-5">
-                                        <p className="font-semibold text-[#555555]">{item?.text}</p>
-                                        <div className="flex justify-between items-center gap-5 text-[#A7A7A7]">
-                                            <span className="text-xs">{item?.createdAt.slice(0, 10)}</span>
-                                            <span className="text-xs">{item?.createdAt.slice(11, 16)}</span>
-                                        </div>
+                    {notifications.map((item: any) => (
+                        <div key={item._id} className="w-full mx-auto p-4 my-4 min-h-20 bg-white shadow-md rounded-md">
+                            <div className="text-sm">
+                                <div className="flex items-center justify-between gap-5 ">
+                                    <p className="font-semibold text-[#555555]">{item?.text}</p>
+                                    <div className="flex justify-between items-center gap-5 text-[#A7A7A7]">
+                                        <span className="text-xs text-black">
+                                            {formatDistanceToNow(new Date(item?.createdAt), { addSuffix: true })}{' '}
+                                            {/* Display time ago */}
+                                        </span>
+                                        <span className="text-xs text-black">
+                                            {moment(item?.createdAt).format('YYYY-MM-DD')}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        );
-                    })}
+                        </div>
+                    ))}
                 </div>
 
                 {/* Pagination Controls */}

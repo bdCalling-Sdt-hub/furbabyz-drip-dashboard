@@ -8,15 +8,6 @@ import Loading from '../../../components/shared/Loading';
 import logo from '../../../../public/user1.png';
 import Swal from 'sweetalert2';
 
-interface FormValues {
-    name: string;
-    email: string;
-    image: File | null;
-    phone: string;
-    postCode: string;
-    country: string;
-}
-
 const EditProfile: React.FC = () => {
     const [form] = Form.useForm(); // Bind the form instance
     const [imagePreview, setImagePreview] = useState<string>('/user.svg');
@@ -54,13 +45,10 @@ const EditProfile: React.FC = () => {
             // Append the form values (title and description)
             formData.append('data', JSON.stringify(values));
 
-            // Append the image file if one is selected
             if (file) {
                 formData.append('image', file);
             }
 
-            // Call the updateBlog mutation and pass the formData
-            // const res = await editBlog({ id, formData }).unwrap();
             const res = await updateProfile(formData).unwrap();
 
             if (res?.success) {

@@ -1,4 +1,4 @@
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdSearch } from 'react-icons/io';
@@ -73,7 +73,7 @@ const SpaceSeeker = () => {
                         className="cursor-pointer text-[#31A2FF] hover:text-[#fff]"
                         onClick={() => handleDetails(record)}
                     >
-                        <AiOutlineExclamationCircle size={24} />
+                        <Button>Details</Button>
                     </div>
                 </div>
             ),
@@ -124,11 +124,8 @@ const SpaceSeeker = () => {
                                 placeholder="Search"
                                 value={searchText}
                                 onChange={(e) => setSearchText(e.target.value)}
-                                className="w-full bg-white text-gray-800 rounded-2xl px-4 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full bg-white text-gray-800 rounded-2xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
-                        </div>
-                        <div className="bg-[#31A2FF] text-white h-8 w-8 flex items-center justify-center rounded-full shadow-md cursor-pointer">
-                            <IoMdSearch size={20} />
                         </div>
                     </div>
                 </div>

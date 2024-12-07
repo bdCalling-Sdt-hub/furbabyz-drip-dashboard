@@ -1,11 +1,13 @@
 import { Button, Form, Input, Select, Upload, message } from 'antd';
 import { useState } from 'react';
 import { useAddProductMutation } from '../../redux/features/product/productApi';
-import { BiImage, BiPlusCircle, BiUpload, BiVideo } from 'react-icons/bi';
+import { BiImage, BiVideo } from 'react-icons/bi';
 import { useGetAllCategoryQuery } from '../../redux/features/category/categoryApi';
 import { useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
 import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
 import Swal from 'sweetalert2';
+import { IoArrowBack } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 const AddProducts = () => {
     const { data: categoriesData } = useGetAllCategoryQuery([]);
@@ -77,6 +79,13 @@ const AddProducts = () => {
 
     return (
         <div>
+            <div className="flex justify-end text-3xl">
+                <Link to="/products">
+                    <p>
+                        <IoArrowBack />
+                    </p>
+                </Link>
+            </div>
             <Form form={form} name="add-product" layout="vertical" onFinish={onFinish} autoComplete="off">
                 <div className="flex items-center gap-5">
                     <Form.Item
