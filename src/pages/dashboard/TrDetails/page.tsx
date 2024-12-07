@@ -253,12 +253,20 @@ interface Payment {
 }
 
 const TrDetails: React.FC = () => {
-    const { data: response, isLoading, error } = useGetAllTransactionQuery([]);
     const [searchText, setSearchText] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
 
+    const {
+        data: response,
+        isLoading,
+        error,
+    } = useGetAllTransactionQuery([
+        { name: 'page', value: currentPage },
+        { name: 'limit', value: 10 },
+    ]);
     const handlePaginationChange = (page: number, limit: number) => {
+        // Update state for current page and page size
         setCurrentPage(page);
         setPageSize(limit);
     };
@@ -377,12 +385,12 @@ const TrDetails: React.FC = () => {
                     dataSource={filteredData} // Use the filtered data
                     rowClassName={() => 'custom-row'}
                     pagination={{
-                        pageSize: pageSize,
-                        total: response?.meta?.total, // Update the pagination total count
-                        current: currentPage,
+                        pageSize: pageSize, // Set page size dynamically
+                        total: response?.data?.length,
+                        current: currentPage, // Set current page dynamically
                         defaultCurrent: 1,
                         showSizeChanger: false,
-                        onChange: handlePaginationChange,
+                        onChange: handlePaginationChange, // Call the pagination change handler
                     }}
                 />
             </ConfigProvider>

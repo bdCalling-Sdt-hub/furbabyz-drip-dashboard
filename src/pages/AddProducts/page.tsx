@@ -120,7 +120,6 @@ function AddProducts() {
         try {
             const formData = new FormData();
             formData.append('data', JSON.stringify(formData));
-            formData.append('image', fileList);
 
             const res: any = await addProduct(formData).unwrap();
 
