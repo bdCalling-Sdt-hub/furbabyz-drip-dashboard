@@ -1,164 +1,265 @@
-import { Button, Form, Input, Select, Space } from 'antd';
-import 'react-phone-input-2/lib/style.css';
-import { Link, useParams } from 'react-router-dom';
-import Loading from '../../components/shared/Loading';
-import Error from '../../components/shared/ErrorPage';
-import { useGetGetSingleProductQuery } from '../../redux/features/product/productApi';
-import { IoArrowBack } from 'react-icons/io5';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Form, Input, Select, Upload, Button } from 'antd';
+import { IoArrowBackCircleOutline } from 'react-icons/io5';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useGetGetSingleProductQuery, useUpdateProductMutation } from '../../redux/features/product/productApi';
+import { useGetAllCategoryQuery } from '../../redux/features/category/categoryApi';
+import { useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
+import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
+import Swal from 'sweetalert2';
 
 const EditProduct = () => {
-    const { id } = useParams();
-    const { isError, isLoading, data }: any = useGetGetSingleProductQuery(id as string);
-    const [availableSizes, setAvailableSizes] = useState<any[]>([]);
-    const [features, setFeatures] = useState<any[]>([]);
-    const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false);
+    const [removedImages, setRemovedImages] = useState<string[]>([]);
+    const { data: categoriesData } = useGetAllCategoryQuery([]);
+    const [updateProduct] = useUpdateProductMutation();
 
-    const renderImages = (images: string[]) => {
-        return (
-            <div className="flex flex-wrap justify-center">
-                {images.map((image, index) => (
-                    <div key={index} className="w-1/3 p-2">
-                        <div className="w-[100px] h-[100px] relative mx-auto">
-                            <img
-                                src={`${import.meta.env.VITE_BASE_URL}${image}`}
-                                alt={`image-${index}`}
-                                className="w-full h-full object-cover rounded-full"
-                            />
-                            <input
-                                id={`imageUploadBanner-${index}`}
-                                type="file"
-                                style={{ display: 'none' }}
-                                accept="image/*"
-                            />
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    };
+    const { data: sizesData } = useGetAllSizeQuery([]);
+    const { data: coloursData } = useGetAllColorQuery([]);
+
+    const categoryOptions = categoriesData?.data?.map((category: { _id: string; name: string }) => ({
+        value: category._id,
+        label: category.name,
+    }));
+    const sizeOptions = sizesData?.data?.result?.map((size: { _id: string; sizeName: string }) => ({
+        value: size._id,
+        label: size.sizeName,
+    }));
+
+    const colourOptions = coloursData?.data?.map((colour: { _id: string; colourName: string }) => ({
+        value: colour._id,
+        label: colour.colourName,
+    }));
+    const { id } = useParams();
+    const { data: productData } = useGetGetSingleProductQuery(id);
+    const product = productData?.data;
+
+    const navigate = useNavigate();
+    const [form] = Form.useForm();
+    const [imageList, setImageList] = useState([]);
+    const [videoList, setVideoList] = useState<any>([]);
 
     useEffect(() => {
-        if (data?.data?.size) {
-            setAvailableSizes(data.data.size);
+        if (product) {
+            // Convert image URLs to Upload component format
+            const formattedImages = product.image.map((url: string, index: number) => ({
+                uid: `-${index}`,
+                name: `image-${index}`,
+                status: 'done',
+                url: `${import.meta.env.VITE_BASE_URL}${url}`,
+            }));
+            setImageList(formattedImages);
+
+            // Convert video URL to Upload component format
+            if (product.video) {
+                setVideoList([
+                    {
+                        uid: '-1',
+                        name: 'video',
+                        status: 'done',
+                        url: `${import.meta.env.VITE_BASE_URL}${product.video}`,
+                    },
+                ]);
+            }
+
+            // Set form values
+            form.setFieldsValue({
+                name: product.name,
+                price: product.price,
+                description: product.description,
+                category: product.category._id,
+                colour: product.colour._id,
+                size: product.size.map((s: any) => s._id),
+                gender: product.gender,
+                features: product.features,
+                productImage: formattedImages,
+                video: product.video
+                    ? [
+                          {
+                              uid: '-1',
+                              name: 'video',
+                              status: 'done',
+                              url: `${import.meta.env.VITE_BASE_URL}${product.video}`,
+                          },
+                      ]
+                    : undefined,
+            });
         }
-        if (data?.data?.features) {
-            setFeatures(data.data.features);
-            form.setFieldsValue({ features: data.data.features });
-        }
-    }, [data, form]);
+    }, [product, form]);
 
-    if (isLoading) {
-        return <Loading />;
-    }
-
-    if (isError) {
-        return <Error />;
-    }
-
-    const images = data?.data?.image || [];
-
-    const handleFeatureChange = (index: number, value: string) => {
-        const newFeatures = [...features];
-        newFeatures[index] = value;
-        setFeatures(newFeatures);
-        form.setFieldsValue({ features: newFeatures });
+    const handleImageChange = ({ fileList }: any) => {
+        setImageList(fileList);
     };
 
-    const addFeature = () => {
-        const newFeatures = [...features, ''];
-        setFeatures(newFeatures);
-        form.setFieldsValue({ features: newFeatures });
+    const handleVideoChange = ({ fileList }: any) => {
+        setVideoList(fileList);
     };
 
-    const removeFeature = (index: number) => {
-        const newFeatures = [...features];
-        newFeatures.splice(index, 1);
-        setFeatures(newFeatures);
-        form.setFieldsValue({ features: newFeatures });
+    const goBack = () => {
+        navigate(-1);
+    };
+
+    const handleRemove = (file: any) => {
+        if (file.url) {
+            const removedUrl = file.url.replace(`${import.meta.env.VITE_BASE_URL}`, '');
+            setRemovedImages((prev) => [...prev, removedUrl]);
+        }
+        return true; // Allow removal in the UI
+    };
+    const onFinish = async (values: any) => {
+        console.log(values);
+        const formData = new FormData();
+        const newImagesArray = values?.productImage?.fileList
+            ?.map((file: { originFileObj?: File }) => file.originFileObj)
+            .filter(Boolean) as File[];
+        console.log({ newImagesArray, removedImages });
+        if (newImagesArray.length > 0) {
+            newImagesArray.forEach((image: File) => {
+                formData.append('image', image);
+            });
+        }
+
+        if (removedImages) {
+            removedImages.forEach((image: string) => {
+                console.log(image);
+                formData.append('imagesToDelete[]', image);
+            });
+        }
+        if (values?.video.file) {
+            formData.append('media', values.video.file);
+        }
+        formData.append('data', JSON.stringify(values));
+
+        const updatedInfo = {
+            id: id,
+            data: formData,
+        };
+
+        try {
+            const res = await updateProduct(updatedInfo).unwrap();
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
-        <div>
-            <div>
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold">Edit Product</h1>
                 <Link to="/products">
-                    <IoArrowBack className="text-2xl" />
+                    <IoArrowBackCircleOutline className="text-4xl" onClick={goBack} />
                 </Link>
             </div>
-            <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-                <Form form={form} name="update_profile" layout="vertical" initialValues={{ remember: true }}>
-                    <div>
-                        <div>
-                            {renderImages(images)}
-                            <video className="w- h-full my-4 object-cover rounded-lg" controls>
-                                <source src={`${import.meta.env.VITE_BASE_URL}${data?.data?.video}`} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Form.Item label="Name" name="name" initialValue={data?.data?.name}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Price" name="price" initialValue={`$ ${data?.data?.price}`}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Gender" name="gender" initialValue={data?.data?.gender}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Category" name="category" initialValue={data?.data?.category?.name}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Description" name="description" initialValue={data?.data?.description}>
-                            <Input.TextArea rows={4} />
-                        </Form.Item>
-                        <Form.Item label="Color" name="color" initialValue={data?.data?.colour?.colourName}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item
-                            label="Size"
-                            name="size"
-                            initialValue={data?.data?.size?.map((size: any) => size._id)}
-                        >
-                            <Select mode="multiple" allowClear>
-                                {availableSizes.map((size: any) => (
-                                    <Select.Option key={size._id} value={size._id}>
-                                        {size.sizeName}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-                    </div>
-
-                    {/* Features */}
-                    <Form.Item label="Features" name="features">
-                        {features.map((feature, index) => (
-                            <Space key={index} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                <Input
-                                    value={feature}
-                                    onChange={(e) => handleFeatureChange(index, e.target.value)}
-                                    placeholder={`Feature ${index + 1}`}
-                                />
-                                <Button onClick={() => removeFeature(index)} type="primary">
-                                    Remove
-                                </Button>
-                            </Space>
-                        ))}
-                        <Button onClick={addFeature} type="dashed">
-                            Add Feature
-                        </Button>
+            <Form onFinish={onFinish} form={form} layout="vertical" name="basic" autoComplete="off" colon={false}>
+                <div className="grid grid-cols-3 gap-3">
+                    <Form.Item
+                        label="Product Name"
+                        name="name"
+                        rules={[{ required: true, message: 'Please input product name!' }]}
+                    >
+                        <Input style={{ height: '42px' }} />
                     </Form.Item>
-                    {/*  */}
-                    <div className="flex justify-center w-full">
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" loading={loading} className="lg:w-[300px] w-full">
-                                {loading ? 'Submitting...' : 'Submit'}
-                            </Button>
-                        </Form.Item>
-                    </div>
-                </Form>
-            </div>
+
+                    <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input price!' }]}>
+                        <Input type="number" style={{ height: '42px' }} />
+                    </Form.Item>
+
+                    <Form.Item label="Description" name="description">
+                        <Input.TextArea style={{ height: '42px' }} />
+                    </Form.Item>
+
+                    <Form.Item label="Category" name="category">
+                        <Select options={categoryOptions} style={{ height: '42px' }} />
+                    </Form.Item>
+
+                    <Form.Item label="Size" name="size">
+                        <Select mode="multiple" style={{ height: '42px' }} options={sizeOptions} />
+                    </Form.Item>
+
+                    <Form.Item label="Gender" name="gender">
+                        <Select style={{ height: '42px' }}>
+                            <Select.Option value="female">Female</Select.Option>
+                            <Select.Option value="male">Male</Select.Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item label="Features" name="features">
+                        <Select mode="tags" style={{ height: '42px' }} placeholder="Please select features">
+                            <Select.Option value="Hat">Hat</Select.Option>
+                            <Select.Option value="Gloves">Gloves</Select.Option>
+                            <Select.Option value="Socks">Socks</Select.Option>
+                            <Select.Option value="Shoes">Shoes</Select.Option>
+                            <Select.Option value="Boots">Boots</Select.Option>
+                            <Select.Option value="Sandals">Sandals</Select.Option>
+                            <Select.Option value="Accessories">Accessories</Select.Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item label="Colour" name="colour">
+                        <Select options={colourOptions} style={{ height: '42px' }} />
+                    </Form.Item>
+                </div>
+
+                <div className="flex gap-4">
+                    <Form.Item
+                        label="Image"
+                        name="productImage"
+                        rules={[{ required: true, message: 'Please upload product image!' }]}
+                    >
+                        <Upload
+                            onRemove={handleRemove}
+                            multiple
+                            maxCount={3}
+                            listType="picture-card"
+                            fileList={imageList}
+                            onChange={handleImageChange}
+                            beforeUpload={() => false}
+                        >
+                            {imageList.length < 3 && (
+                                <div>
+                                    <p className="ant-upload-hint">Upload at least 3 images</p>
+                                </div>
+                            )}
+                        </Upload>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Video"
+                        name="video"
+                        rules={[{ required: true, message: 'Please upload product video!' }]}
+                    >
+                        <Upload
+                            maxCount={1}
+                            listType="picture-card"
+                            fileList={videoList}
+                            onChange={handleVideoChange}
+                            beforeUpload={() => false}
+                            accept=".mp4,.mov,.avi,.mkv,.wmv"
+                        >
+                            {videoList.length === 0 && (
+                                <div>
+                                    <p className="ant-upload-text">Upload</p>
+                                    <p className="ant-upload-hint">Upload product video</p>
+                                </div>
+                            )}
+                        </Upload>
+                    </Form.Item>
+                </div>
+
+                <Form.Item wrapperCol={{ offset: 3, span: 21 }}>
+                    <Button type="primary" htmlType="submit" style={{ height: '42px' }}>
+                        Update
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 };
