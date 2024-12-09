@@ -19,7 +19,16 @@ const ForgetPassword = () => {
                 navigate('/verify-otp');
                 navigate(`/verify-otp?email=${values.email}`);
             }
-            console.log(res);
+
+            if (res) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `Forgot Password Successfully`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',

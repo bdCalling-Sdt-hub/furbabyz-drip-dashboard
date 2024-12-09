@@ -129,7 +129,11 @@ const AddBlog: any = () => {
                             name="des"
                             rules={[{ required: true, message: 'Please enter your description' }]}
                         >
-                            <Input.TextArea rows={8} placeholder="enter your description" />
+                            <Input.TextArea
+                                style={{ borderRadius: '6px' }}
+                                rows={8}
+                                placeholder="enter your description"
+                            />
                         </Form.Item>
 
                         {/* Submit Button */}

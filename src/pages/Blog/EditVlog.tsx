@@ -9,12 +9,6 @@ import { CiEdit } from 'react-icons/ci';
 import { IoArrowBack } from 'react-icons/io5';
 import Swal from 'sweetalert2';
 
-interface FormValues {
-    image: File | null;
-    des: string;
-    title: string;
-}
-
 const BlogDetails = () => {
     const [loading, setLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | undefined>();
@@ -171,7 +165,7 @@ const BlogDetails = () => {
 
                     {/* Description */}
                     <Form.Item label="Description" name="des" initialValue={data?.data?.des}>
-                        <Input.TextArea rows={8} />
+                        <Input.TextArea rows={8} style={{ borderRadius: 5 }} />
                     </Form.Item>
 
                     <Form.Item>

@@ -225,7 +225,7 @@
 // export default TrDetails;
 
 import React, { useState } from 'react';
-import { Button, ConfigProvider, Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import { useGetAllTransactionQuery } from '../../../redux/features/treansactionDetails/treansactionApi';
 
 import Loading from '../../../components/shared/Loading';
@@ -273,7 +273,7 @@ const TrDetails: React.FC = () => {
 
     // Transform and filter the data
     const filteredData = response?.data
-        ?.map((payment: Payment, index: number) => {
+        ?.map((payment: Payment) => {
             return payment.products.map((product) => ({
                 key: `${payment._id}-${product._id}`, // Unique key for each row
                 picture: product.productId.image[0], // First image of the product
@@ -358,7 +358,7 @@ const TrDetails: React.FC = () => {
                                     placeholder="Search"
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
-                                    className="w-full bg-white text-gray-800 rounded-2xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full lg:w-72 bg-white text-gray-800 rounded-3xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 />
                             </div>
                         </div>

@@ -1,8 +1,7 @@
 import { Button, Table } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoMdSearch } from 'react-icons/io';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
+
 import { useGetAllUsersQuery } from '../../redux/features/users/userApi';
 import Loading from '../../components/shared/Loading';
 import Error from '../../components/shared/ErrorPage';
@@ -124,7 +123,7 @@ const SpaceSeeker = () => {
                                 placeholder="Search"
                                 value={searchText}
                                 onChange={(e) => setSearchText(e.target.value)}
-                                className="w-full bg-white text-gray-800 rounded-2xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full lg:w-72 bg-white text-gray-800 rounded-3xl px-10 py-2 shadow-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
                     </div>

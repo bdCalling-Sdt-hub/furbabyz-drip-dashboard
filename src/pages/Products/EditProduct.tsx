@@ -9,6 +9,7 @@ import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
 import Swal from 'sweetalert2';
 
 const EditProduct = () => {
+    const router = useNavigate();
     const [removedImages, setRemovedImages] = useState<string[]>([]);
     const { data: categoriesData } = useGetAllCategoryQuery([]);
     const [updateProduct] = useUpdateProductMutation();
@@ -106,21 +107,19 @@ const EditProduct = () => {
         return true; // Allow removal in the UI
     };
     const onFinish = async (values: any) => {
-        console.log(values);
         const formData = new FormData();
         const newImagesArray = values?.productImage?.fileList
             ?.map((file: { originFileObj?: File }) => file.originFileObj)
             .filter(Boolean) as File[];
-        console.log({ newImagesArray, removedImages });
-        if (newImagesArray.length > 0) {
+
+        if (newImagesArray?.length > 0) {
             newImagesArray.forEach((image: File) => {
                 formData.append('image', image);
             });
         }
 
         if (removedImages) {
-            removedImages.forEach((image: string) => {
-                console.log(image);
+            removedImages?.forEach((image: string) => {
                 formData.append('imagesToDelete[]', image);
             });
         }
@@ -145,6 +144,7 @@ const EditProduct = () => {
                     timer: 1500,
                 });
             }
+            router('/products');
         } catch (error) {
             console.log(error);
         }

@@ -105,20 +105,20 @@ const Faq = () => {
     return (
         <div>
             <div className="flex justify-end gap-2">
-                <Link to="/add-faq">
-                    <button className="bg-[#31A2FF] text-white h-8 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
-                        Add Faq
-                    </button>
-                </Link>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                     <Input
                         placeholder="Search"
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: '300px', display: 'flex', alignItems: 'center' }} // Adjust the width as needed
+                        style={{ width: '300px', height: '40px', display: 'flex', alignItems: 'center' }} // Adjust the width as needed
                         prefix={<CiSearch />} // Add the search icon here
                     />
                 </div>
+                <Link to="/add-faq">
+                    <button className="bg-[#31A2FF] text-white h-10 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
+                        Add Faq
+                    </button>
+                </Link>
             </div>
             <Table
                 columns={columns}

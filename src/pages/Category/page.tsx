@@ -12,7 +12,7 @@ const Category = () => {
     const navigate = useNavigate(); // Initialize useNavigate hook
 
     // Fetch sizes and provide loading and error states
-    const { data, isLoading, isError, error, refetch } = useGetAllCategoryQuery(undefined);
+    const { data, isLoading, isError, refetch } = useGetAllCategoryQuery(undefined);
     const [deleteCategory] = useDeleteCategoryMutation();
 
     const handleDetails = (record: any) => {
@@ -98,20 +98,20 @@ const Category = () => {
     return (
         <div>
             <div className="flex justify-end gap-2">
-                <Link to="/category">
-                    <button className="bg-[#31A2FF] text-white h-8 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
-                        Add Category
-                    </button>
-                </Link>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
                     <Input
                         placeholder="Search"
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
-                        style={{ width: '300px', display: 'flex', alignItems: 'center' }}
+                        style={{ width: '300px', height: '40px', display: 'flex', alignItems: 'center' }}
                         prefix={<CiSearch />}
                     />
                 </div>
+                <Link to="/category">
+                    <button className="bg-[#31A2FF] text-white h-10 w-32 flex items-center justify-center rounded-full shadow-md cursor-pointer">
+                        Add Category
+                    </button>
+                </Link>
             </div>
             <Table columns={columns} dataSource={filteredData} />
         </div>

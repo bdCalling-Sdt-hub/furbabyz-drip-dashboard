@@ -3,13 +3,12 @@ import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import 'react-phone-input-2/lib/style.css';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import Error from '../../components/shared/ErrorPage';
 import Loading from '../../components/shared/Loading';
 import { useAddCategoryMutation } from '../../redux/features/category/categoryApi';
 
 function AddCategory() {
     const [name, setName] = useState('');
-    const [addCategory, { isLoading, isError, isSuccess }] = useAddCategoryMutation(); // Destructure the hook
+    const [addCategory, { isLoading, isSuccess }] = useAddCategoryMutation(); // Destructure the hook
 
     const navigate = useNavigate();
 
@@ -47,7 +46,7 @@ function AddCategory() {
                 Swal.fire({
                     position: 'top-end',
                     icon: 'error',
-                    title: response.message || 'Failed to add color',
+                    title: `${response.message}` || 'Failed to add color',
                     showConfirmButton: false,
                     timer: 1500,
                 });
@@ -68,13 +67,6 @@ function AddCategory() {
         navigate('/size');
     }
 
-    if (isError) {
-        return (
-            <div>
-                <Error />
-            </div>
-        );
-    }
     if (isLoading) {
         return (
             <div>

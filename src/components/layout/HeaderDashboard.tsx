@@ -15,7 +15,7 @@ const HeaderDashboard = () => {
     const { data, isLoading } = useGetProfileQuery(undefined);
     const { data: notification } = useGetANotificationQuery(undefined);
 
-    const [notifications, setNotifications] = useState<any[]>([]);
+    const [, setNotifications] = useState<any[]>([]);
     const [notificationCount, setNotificationCount] = useState<number>(0);
 
     // Fetch notification count and store in state and localStorage
@@ -78,7 +78,9 @@ const HeaderDashboard = () => {
         >
             <div className="flex justify-between mt-2 w-full ">
                 <div className="flex flex-col gap-2 flex-grow">
-                    <h1 className="text-xl font-semibold mt-5">Welcome {data?.data?.name}</h1>
+                    <h1 className="text-lg  mt-5 font-">
+                        Welcome <span className="text-[#31A2FF] font-semibold">{data?.data?.name}</span>
+                    </h1>
                 </div>
                 <div className="flex items-center justify-end gap-5 h-full">
                     <div>

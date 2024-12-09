@@ -1,15 +1,10 @@
-import { Select } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useGetEarningChartQuery } from '../../../redux/features/dashboard/dashboardApi';
-import { useState } from 'react';
 import Loading from '../../../components/shared/Loading';
 import Error from '../../../components/shared/ErrorPage';
-const { Option } = Select;
 
 const EarningChart = () => {
     const { isError, isLoading, data } = useGetEarningChartQuery(undefined);
-
-    const [year, setYear] = useState('2024');
 
     const chartData =
         data?.data?.[0]?.earnings?.map((item: any) => ({
@@ -17,8 +12,6 @@ const EarningChart = () => {
             totalAmount: item.totalAmount, // Amount for that month
             year: item.year, // Amount for that month
         })) || [];
-
-    console.log(year);
 
     if (isLoading) {
         return (

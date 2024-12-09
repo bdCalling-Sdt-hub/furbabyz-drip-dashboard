@@ -1,10 +1,5 @@
 import { baseApi } from '../../api/baseApi';
 
-type TQueryParams = {
-    name: string;
-    value: string | number | boolean | null; // adjust as needed
-};
-
 // Define the structure of the paginated response
 type TApiResponseWithPagination<T> = {
     data: {

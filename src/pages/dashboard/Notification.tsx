@@ -72,6 +72,7 @@
 import { Button } from 'antd';
 import { useState, useEffect } from 'react';
 import {
+    useDeleteAllNotificationsMutation,
     useGetAllNotificationQuery,
     useGetANotificationQuery,
     useReadNotificationMutation,
@@ -94,6 +95,9 @@ const Notification = () => {
     const { refetch: refetchNotification } = useGetANotificationQuery(undefined);
 
     const [read, { isLoading: isReadLoading }] = useReadNotificationMutation();
+
+    //delele
+    const [deleteNotification, { isLoading: isDeleteLoading }] = useDeleteAllNotificationsMutation();
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage); // Update the page number
@@ -142,6 +146,26 @@ const Notification = () => {
         );
     }
 
+    const handleDeleteNotification = async () => {
+        try {
+            const res = await deleteNotification('/admin').unwrap();
+
+            if (res?.success) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `${res.message}`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
+
+            refetch();
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+        }
+    };
+
     const handleReadNotification = async () => {
         try {
             const res = await read('/admin').unwrap();
@@ -167,13 +191,22 @@ const Notification = () => {
             <div className="bg-white p-5 rounded-xl shadow-lg">
                 <div className="flex items-center justify-between my-4">
                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
-                    <Button
-                        loading={isReadLoading}
-                        onClick={handleReadNotification}
-                        className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg"
-                    >
-                        <span>Read All</span>
-                    </Button>
+                    <div>
+                        <Button
+                            loading={isReadLoading}
+                            onClick={handleReadNotification}
+                            className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg"
+                        >
+                            <span>Read All</span>
+                        </Button>
+                        <Button
+                            loading={isDeleteLoading}
+                            onClick={handleDeleteNotification}
+                            className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg ml-5"
+                        >
+                            <span>Delete All</span>
+                        </Button>
+                    </div>
                 </div>
                 <div>
                     {notifications.map((item: any) => (

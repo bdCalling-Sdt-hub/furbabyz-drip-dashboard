@@ -18,6 +18,15 @@ const NewPassword = () => {
             if (res) {
                 navigate('/');
             }
+
+            if (res) {
+                Swal.fire({
+                    icon: 'success',
+                    title: `Password Updated Successfully`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            }
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',

@@ -7,9 +7,10 @@ import { useGetAllSizeQuery } from '../../redux/features/size/sizeApi';
 import { useGetAllColorQuery } from '../../redux/features/color/colorApi';
 import Swal from 'sweetalert2';
 import { IoArrowBack } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AddProducts = () => {
+    const router = useNavigate();
     const { data: categoriesData } = useGetAllCategoryQuery([]);
 
     const { data: sizesData } = useGetAllSizeQuery([]);
@@ -72,6 +73,7 @@ const AddProducts = () => {
                 setImageList([]);
                 setVideoList([]);
             }
+            router('/products');
         } catch (error) {
             console.log(error);
         }
@@ -131,7 +133,7 @@ const AddProducts = () => {
                         rules={[{ required: true, message: 'Please input product name!' }]}
                         style={{ height: '42px' }}
                     >
-                        <Input style={{ height: '42px' }} />
+                        <Input style={{ height: '42px' }} placeholder="Enter product name" />
                     </Form.Item>
                     <Form.Item
                         label="Price"
@@ -139,7 +141,7 @@ const AddProducts = () => {
                         rules={[{ required: true, message: 'Please input product price!' }]}
                         style={{ height: '42px' }}
                     >
-                        <Input type="number" style={{ height: '42px' }} />
+                        <Input type="number" style={{ height: '42px' }} placeholder="Enter price " />
                     </Form.Item>
                     <Form.Item
                         label="Category"
@@ -191,7 +193,7 @@ const AddProducts = () => {
                         rules={[{ required: true, message: 'Please input product description!' }]}
                         style={{ height: '42px' }}
                     >
-                        <Input.TextArea style={{ height: '42px' }} />
+                        <Input.TextArea style={{ height: '42px' }} placeholder="Enter description" />
                     </Form.Item>
                     <Form.Item
                         label="Features"

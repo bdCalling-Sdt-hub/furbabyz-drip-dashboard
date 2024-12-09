@@ -3,6 +3,7 @@ import JoditEditor from 'jodit-react';
 import { Button } from 'antd';
 import { useAddPolicyMutation, useGetAllPolicyQuery } from '../../redux/features/ReturnPolicy/ReturnPolicyApi';
 import Swal from 'sweetalert2';
+import Loading from '../../components/shared/Loading';
 
 const Return = () => {
     const editor = useRef(null);
@@ -22,6 +23,10 @@ const Return = () => {
             background: 'white',
         },
     };
+
+    if (isLoading) {
+        return <Loading />;
+    }
 
     const handleSave = async () => {
         try {

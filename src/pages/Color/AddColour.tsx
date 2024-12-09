@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 function AddColour() {
     const [colourName, setName] = useState('');
-    const [addColor, { isLoading, isError, isSuccess }] = useAddColorMutation(); // Destructure the hook
+    const [addColor, { isLoading, isSuccess }] = useAddColorMutation(); // Destructure the hook
 
     const navigate = useNavigate();
 

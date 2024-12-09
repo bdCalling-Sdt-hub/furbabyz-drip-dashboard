@@ -2,7 +2,7 @@ import { TSidebarItem } from './generateSidebarItems';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { TbCategoryPlus, TbLogout } from 'react-icons/tb';
 import { LuUser } from 'react-icons/lu';
-import { MdOutlinePersonalInjury, MdOutlineProductionQuantityLimits } from 'react-icons/md';
+import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { GoGear } from 'react-icons/go';
 import { RxDashboard } from 'react-icons/rx';
 import { FaBloggerB, FaQuestion, FaRegMoneyBillAlt } from 'react-icons/fa';

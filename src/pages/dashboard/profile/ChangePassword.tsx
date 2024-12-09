@@ -37,7 +37,7 @@ function ChangePassword() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row items-center justify-center min-h-screen ">
+        <div className="flex flex-col md:flex-row items-center justify-center my-10">
             {/* Left Column - Image */}
 
             {/* Right Column - Form */}

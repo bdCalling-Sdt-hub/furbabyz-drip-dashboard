@@ -1,7 +1,7 @@
-import { Button, ConfigProvider, Form, FormProps, Input } from 'antd';
+import { Button, ConfigProvider, Form, FormProps } from 'antd';
 import { FieldNamesType } from 'antd/es/cascader';
 import { IoArrowBack } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/image.png';
 import { useVerifyOtpMutation } from '../../redux/features/reset/resetApi';
 import Swal from 'sweetalert2';
@@ -27,6 +27,16 @@ const VerifyOtp = () => {
             if (response) {
                 localStorage.setItem('Authorization', response.data);
                 navigate(`/new-password?email=${email}`);
+            }
+
+            if (response) {
+                Swal.fire({
+                    position: 'top',
+                    icon: 'success',
+                    title: `Verify Otp Successfully`,
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
             }
         } catch (error: any) {
             Swal.fire({
@@ -114,7 +124,9 @@ const VerifyOtp = () => {
                                 </Form.Item>
                                 <div className="text-center text-lg flex items-center justify-between gap-2">
                                     <p className="text-primaryText">Didn’t receive the code?</p>
-                                    <p className="text-primary">Resend code</p>
+                                    <Link to="/forget-password" className="text-primaryText">
+                                        Resend
+                                    </Link>
                                 </div>
                             </Form>
                         </div>
