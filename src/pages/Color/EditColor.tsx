@@ -46,14 +46,11 @@ function EditColor() {
             // Redirect after success
             navigate('/colors');
         } catch (error: any) {
-            console.error('Error updating color:', error);
-
-            // Optional: Show an error alert
             Swal.fire({
                 position: 'top-end',
                 icon: 'error',
-                title: error,
-                text: error.message || 'Failed to update color.',
+                title: error.message || 'Failed to update color.',
+                text: error.data.message || 'Failed to update color.',
                 showConfirmButton: true,
             });
         }

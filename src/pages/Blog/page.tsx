@@ -2,7 +2,6 @@ import { Button, Table } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'react-calendar/dist/Calendar.css';
-import { IoMdSearch } from 'react-icons/io';
 
 import { useDeleteBlogMutation, useGetAllBlogQuery } from '../../redux/features/blog/blogApi';
 import Error from '../../components/shared/ErrorPage';

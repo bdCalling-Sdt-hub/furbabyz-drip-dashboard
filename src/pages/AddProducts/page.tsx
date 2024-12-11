@@ -43,6 +43,20 @@ const AddProducts = () => {
     };
 
     const onFinish = async (values: any) => {
+        const numericPrice = parseFloat(values.price);
+        if (isNaN(numericPrice)) {
+            Swal.fire({
+                position: 'top',
+                icon: 'error',
+                title: 'Invalid price value!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
+        values.price = numericPrice;
+
         const images = values?.productImage?.fileList.map((image: any) => image.originFileObj);
         const video = values?.video?.file;
         const formData = new FormData();

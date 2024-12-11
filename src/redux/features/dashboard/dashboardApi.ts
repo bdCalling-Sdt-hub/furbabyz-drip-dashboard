@@ -9,12 +9,12 @@ const userApi = baseApi.injectEndpoints({
             }),
         }),
         getEarningChart: builder.query({
-            query: () => ({
-                url: `/dashboard/get-total-earning-chart`,
+            query: ({ year }) => ({
+                url: `/dashboard/get-total-earning-chart?year=${year}`,
                 method: 'GET',
             }),
         }),
     }),
 });
 
-export const { useGetStatisticsQuery ,useGetEarningChartQuery} = userApi;
+export const { useGetStatisticsQuery, useGetEarningChartQuery } = userApi;

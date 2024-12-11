@@ -2,9 +2,16 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { useGetEarningChartQuery } from '../../../redux/features/dashboard/dashboardApi';
 import Loading from '../../../components/shared/Loading';
 import Error from '../../../components/shared/ErrorPage';
+import { Select } from 'antd';
+import { useState } from 'react';
 
 const EarningChart = () => {
-    const { isError, isLoading, data } = useGetEarningChartQuery(undefined);
+    const currentYear = new Date().getFullYear();
+    const [year, setYear] = useState(currentYear);
+
+    const years = Array.from({ length: 12 }, (_, i) => currentYear - 10 + i);
+
+    const { isError, isLoading, data } = useGetEarningChartQuery({ year });
 
     const chartData =
         data?.data?.[0]?.earnings?.map((item: any) => ({
@@ -29,6 +36,8 @@ const EarningChart = () => {
         );
     }
 
+    console.log(data, 'dasData');
+
     return (
         <div
             style={{
@@ -39,15 +48,16 @@ const EarningChart = () => {
         >
             <div className="px-2 flex items-center justify-between">
                 <h1 className="text-xl font-medium">Earnings</h1>
-                {/* <Select onChange={(value) => setYear(value)} defaultValue="2024" className="w-32 h-[40px]">
-                    <Option value="2024">2024</Option>
-                    <Option value="2025">2025</Option>
-                    <Option value="2026">2026</Option>
-                    <Option value="2027">2027</Option>
-                    <Option value="2028">2028</Option>
-                    <Option value="2029">2029</Option>
-                    <Option value="2030">2030</Option>
-                </Select> */}
+                <Select onChange={(e: any) => setYear(e)} defaultValue="2024" className="w-32 h-[40px]">
+                    {years
+                        .slice()
+                        .reverse() // Reverse the years array so recent years appear first
+                        .map((year) => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                </Select>
             </div>
             <ResponsiveContainer width="100%" height={350}>
                 <BarChart

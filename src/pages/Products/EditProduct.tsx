@@ -42,7 +42,7 @@ const EditProduct = () => {
     useEffect(() => {
         if (product) {
             // Convert image URLs to Upload component format
-            const formattedImages = product.image.map((url: string, index: number) => ({
+            const formattedImages = product?.image?.map((url: string, index: number) => ({
                 uid: `-${index}`,
                 name: `image-${index}`,
                 status: 'done',
@@ -108,6 +108,20 @@ const EditProduct = () => {
     };
     const onFinish = async (values: any) => {
         const formData = new FormData();
+        const numericPrice = parseFloat(values.price);
+        if (isNaN(numericPrice)) {
+            Swal.fire({
+                position: 'top',
+                icon: 'error',
+                title: 'Invalid price value!',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            return;
+        }
+
+        values.price = numericPrice;
+
         const newImagesArray = values?.productImage?.fileList
             ?.map((file: { originFileObj?: File }) => file.originFileObj)
             .filter(Boolean) as File[];
