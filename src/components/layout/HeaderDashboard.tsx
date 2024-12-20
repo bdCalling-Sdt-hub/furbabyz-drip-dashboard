@@ -41,7 +41,7 @@ const HeaderDashboard = () => {
         if (!data) return;
 
         // Create a socket connection
-        const socket = io('http://192.168.10.18:5050', {
+        const socket = io(import.meta.env.VITE_BASE_URL, {
             transports: ['websocket'],
         });
 
@@ -76,19 +76,19 @@ const HeaderDashboard = () => {
                 overflow: 'hidden',
             }}
         >
-            <div className="flex justify-between mt-2 w-full ">
-                <div className="flex flex-col gap-2 flex-grow">
-                    <h1 className="text-lg  mt-5 font-">
+            <div className="flex justify-between w-full mt-2 ">
+                <div className="flex flex-col flex-grow gap-2">
+                    <h1 className="mt-5 text-lg font-">
                         Welcome <span className="text-[#31A2FF] font-semibold">{data?.data?.name}</span>
                     </h1>
                 </div>
-                <div className="flex items-center justify-end gap-5 h-full">
+                <div className="flex items-center justify-end h-full gap-5">
                     <div>
                         {/* Notification Icon */}
                         <Link to={'/notification'}>
                             <div className="size-10 bg-[#fff] rounded-full flex items-center justify-center ">
-                                <button className="py-4 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out">
-                                    <span className="absolute inset-0 -top-4 -mr-6">
+                                <button className="relative px-1 py-4 text-gray-800 transition duration-150 ease-in-out border-2 border-transparent rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500">
+                                    <span className="absolute inset-0 -mr-6 -top-4">
                                         <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-primary text-white">
                                             {notificationCount}
                                         </div>
@@ -229,17 +229,17 @@ export default HeaderDashboard;
 //                 overflow: 'hidden',
 //             }}
 //         >
-//             <div className="flex justify-between mt-2 w-full ">
-//                 <div className="flex flex-col gap-2 flex-grow">
-//                     <h1 className="text-xl font-semibold mt-5">Welcome {data?.data?.name}</h1>
+//             <div className="flex justify-between w-full mt-2 ">
+//                 <div className="flex flex-col flex-grow gap-2">
+//                     <h1 className="mt-5 text-xl font-semibold">Welcome {data?.data?.name}</h1>
 //                 </div>
-//                 <div className="flex items-center justify-end gap-5 h-full">
+//                 <div className="flex items-center justify-end h-full gap-5">
 //                     <div>
 //                         {/* Notification icons */}
 //                         <Link to={'/notification'}>
 //                             <div className="size-10 bg-[#fff] rounded-full flex items-center justify-center ">
-//                                 <button className="py-4 px-1 relative border-2 border-transparent text-gray-800 rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500 transition duration-150 ease-in-out">
-//                                     <span className="absolute inset-0 -top-4  -mr-6">
+//                                 <button className="relative px-1 py-4 text-gray-800 transition duration-150 ease-in-out border-2 border-transparent rounded-full hover:text-gray-400 focus:outline-none focus:text-gray-500">
+//                                     <span className="absolute inset-0 -mr-6 -top-4">
 //                                         <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-primary text-white">
 //                                             {notification?.data?.meta?.unread || 0}
 //                                         </div>

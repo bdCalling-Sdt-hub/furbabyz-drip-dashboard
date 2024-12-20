@@ -27,17 +27,17 @@
 
 //     return (
 //         <div className="mt-5">
-//             <div className="bg-white p-5 rounded-xl shadow-lg">
+//             <div className="p-5 bg-white shadow-lg rounded-xl">
 //                 <div className="flex items-center justify-between my-4">
 //                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
-//                     <Button className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg">
+//                     <Button className="h-10 text-sm font-normal bg-white border rounded-lg text-primary border-primary">
 //                         <span>Read All</span>
 //                     </Button>
 //                 </div>
 //                 <div>
 //                     {data?.data?.map((item: any, index: number) => {
 //                         return (
-//                             <div key={index} className="w-full mx-auto p-4 my-4 min-h-20 bg-white shadow-md rounded-md">
+//                             <div key={index} className="w-full p-4 mx-auto my-4 bg-white rounded-md shadow-md min-h-20">
 //                                 <div className="text-sm">
 //                                     <div className="flex items-center gap-5">
 //                                         <p className="font-semibold text-[#555555]">{item?.text}</p>
@@ -105,7 +105,7 @@ const Notification = () => {
 
     // Setup the socket connection and listen for real-time updates
     useEffect(() => {
-        const socket = io('http://192.168.10.18:5050'); // Connect to your socket server
+        const socket = io(import.meta.env.VITE_BASE_URL); // Connect to your socket server
 
         socket.on('get-notification::ADMIN', (newNotification) => {
             setNotifications((prevNotifications) => {
@@ -188,21 +188,21 @@ const Notification = () => {
 
     return (
         <div className="mt-5">
-            <div className="bg-white p-5 rounded-xl shadow-lg">
+            <div className="p-5 bg-white shadow-lg rounded-xl">
                 <div className="flex items-center justify-between my-4">
                     <h1 className="text-2xl font-semibold text-primary">Notification</h1>
                     <div>
                         <Button
                             loading={isReadLoading}
                             onClick={handleReadNotification}
-                            className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg"
+                            className="h-10 text-sm font-normal bg-white border rounded-lg text-primary border-primary"
                         >
                             <span>Read All</span>
                         </Button>
                         <Button
                             loading={isDeleteLoading}
                             onClick={handleDeleteNotification}
-                            className="h-10 bg-white text-primary font-normal text-sm border border-primary rounded-lg ml-5"
+                            className="h-10 ml-5 text-sm font-normal bg-white border rounded-lg text-primary border-primary"
                         >
                             <span>Delete All</span>
                         </Button>
@@ -210,7 +210,7 @@ const Notification = () => {
                 </div>
                 <div>
                     {notifications.map((item: any) => (
-                        <div key={item._id} className="w-full mx-auto p-4 my-4 min-h-20 bg-white shadow-md rounded-md">
+                        <div key={item._id} className="w-full p-4 mx-auto my-4 bg-white rounded-md shadow-md min-h-20">
                             <div className="text-sm">
                                 <div className="flex items-center justify-between gap-5 ">
                                     <p className="font-semibold text-[#555555]">{item?.text}</p>
